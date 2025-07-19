@@ -3,9 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cricket Association</title>
+  <title>Fitness Assessment Charts</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  
+
+<div class="container">
+  <div class="chart-box orange">
+    <div class="chart-title">YoYo Test</div>
+    <canvas id="chartYoYo"></canvas>
+    <div class="data-table">
+      <table>
+        <tr><th>Date</th><th>Phase</th><th>Value</th></tr>
+        <tr><td>21-Aug-2023</td><td>Pre-Season</td><td>16.7</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <div class="chart-title">Standing Broad Jump</div>
+    <canvas id="chartSBJ"></canvas>
+    <div class="data-table">
+      <table>
+        <tr><th>Date</th><th>Jump</th><th>Target</th></tr>
+        <tr><td>7-Apr-2023</td><td>2.28</td><td>2.60</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="chart-box red">
+    <div class="chart-title">Run A 3 (sec)</div>
+    <canvas id="chartRunA3"></canvas>
+    <div class="data-table">
+      <table>
+        <tr><th>Date</th><th>Run A 3</th><th>Target</th></tr>
+        <tr><td>30-Jan-2021</td><td>9.41</td><td>9.0</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add more charts similarly -->
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>

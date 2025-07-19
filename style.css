@@ -1,0 +1,63 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.chart-box {
+  width: 400px;
+  background-color: #222;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.chart-title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #fff;
+  padding-bottom: 5px;
+}
+
+.data-table {
+  font-size: 12px;
+  background-color: #111;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.data-table table {
+  width: 100%;
+  color: #ccc;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 4px;
+  border: 1px solid #555;
+}
+
+.orange {
+  background-color: #e67e22;
+}
+
+.red {
+  background-color: #c0392b;
+}
+
+.yellow {
+  background-color: #f1c40f;
+  color: #000;
+}
