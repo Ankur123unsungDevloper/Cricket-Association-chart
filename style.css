@@ -1,63 +1,119 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: #fff;
-  color: #fff;
   margin: 0;
-  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+.main-header {
+  background-color: #003300;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.5rem;
+  border-bottom: 5px solid orange;
+}
+
+.layout {
+  display: flex;
+  flex-direction: row;
+  margin: 20px;
+  gap: 20px;
+}
+
+.sidebar {
+  width: 250px;
+  background: #e0e0e0;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+}
+
+.sidebar select {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 20px;
 }
 
 .container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-grow: 1;
+  background: white;
   padding: 20px;
-  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .chart-box {
-  width: 400px;
-  background-color: #222;
-  padding: 20px;
+  padding: 10px;
+  background-color: #004d00;
+  color: white;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.chart-title-fixed {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ffffff55;
 }
 
 .chart-title {
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #fff;
-  padding-bottom: 5px;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
-.data-table {
-  font-size: 12px;
-  background-color: #111;
+canvas {
+  background: #004d00;
+  border-radius: 10px;
   padding: 10px;
-  border-radius: 5px;
 }
 
 .data-table table {
   width: 100%;
-  color: #ccc;
   border-collapse: collapse;
+  margin-top: 15px;
+  background-color: white;
 }
 
 .data-table th,
 .data-table td {
-  padding: 4px;
-  border: 1px solid #555;
+  border: 1px solid #999;
+  padding: 8px;
+  text-align: left;
 }
 
-.orange {
-  background-color: #e67e22;
+.player-card {
+  background-color: #1b5e20;
+  color: white;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 }
 
-.red {
-  background-color: #c0392b;
+.player-card table td {
+  padding: 5px 10px;
 }
 
-.yellow {
-  background-color: #f1c40f;
-  color: #000;
+.injury-table {
+  margin: 20px;
+  background-color: #fff3e0;
+  padding: 15px;
+  border-radius: 10px;
+  border-top: 5px solid orange;
+}
+
+.injury-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.injury-table th,
+.injury-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
 }
