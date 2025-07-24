@@ -1,73 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cricket Association - Player Assessment Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Player Performance Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<header class="main-header">
-  <h1>Cricket Association - Player Assessment Dashboard</h1>
-</header>
+  <div class="dashboard-header">🏏 Cricket Association - Player Report</div>
 
-<div id="playerInfo" class="player-card">
-  <h2>Individual Report - PLAYER 29</h2>
-  <table>
-    <tr><td><strong>Name</strong></td><td>PLAYER 29</td></tr>
-    <tr><td><strong>Gender</strong></td><td>Male</td></tr>
-    <tr><td><strong>Age</strong></td><td>28.19</td></tr>
-    <tr><td><strong>Handedness</strong></td><td>Right</td></tr>
-    <tr><td><strong>Role</strong></td><td>Batsman</td></tr>
-  </table>
-</div>
-
-<div class="layout">
-  <!-- Right Sidebar with Filter -->
-  <aside class="sidebar">
-    <h2>Filter</h2>
-    <label for="testSelect">Select Test</label>
-    <select id="testSelect">
-      <option value="10m">10m Sprint</option>
-      <option value="20m">20m Sprint</option>
-      <option value="YoYo">YoYo Test</option>
-      <option value="SBJ">Standing Broad Jump</option>
-      <option value="Glute">SL Glute Bridges</option>
-      <option value="Copen">Copen Hagen</option>
+  <div class="controls">
+    <label for="playerSelect">Select Player:</label>
+    <select id="playerSelect">
+      <option value="PLAYER 29">PLAYER 29</option>
+      <option value="PLAYER 33">PLAYER 33</option>
+      <!-- Add more players -->
     </select>
 
-    <h2>Data Table</h2>
-    <div class="data-table" id="playerData"></div>
-  </aside>
+    <label for="testCount">Number of Recent Tests:</label>
+    <input type="number" id="testCount" min="1" max="10" value="5" />
 
-  <!-- Main Chart Section -->
-  <main class="container">
-    <div class="chart-box dark-green">
-      <div class="chart-title-fixed">Fitness Test - Best Result</div>
-      <div class="chart-title" id="dynamicTitle">Performance Chart - 10m</div>
-      <canvas id="chartDynamic"></canvas>
-    </div>
-  </main>
-</div>
+    <label>Select Tests to Show:</label>
+    <ul id="testList">
+      <li data-test="YoYo">YoYo Test <button class="up">⬆️</button><button class="down">⬇️</button></li>
+      <li data-test="10m">10m Sprint <button class="up">⬆️</button><button class="down">⬇️</button></li>
+      <li data-test="20m">20m Sprint <button class="up">⬆️</button><button class="down">⬇️</button></li>
+      <li data-test="SBJ">Standing Broad Jump <button class="up">⬆️</button><button class="down">⬇️</button></li>
+    </ul>
 
-<div class="injury-table">
-  <h3>Injury History</h3>
-  <table>
-    <thead>
-      <tr><th>Player</th><th>2023-24 Injuries</th><th>Previous History</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>PLAYER 29</td>
-        <td>#NA</td>
-        <td>#NA</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+    <button id="generateReport">Generate Report</button>
+  </div>
 
-<script src="script.js"></script>
+  <div id="reportArea"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

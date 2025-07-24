@@ -1,119 +1,77 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-}
-
-.main-header {
-  background-color: #003300;
-  color: white;
-  text-align: center;
-  padding: 1rem;
-  font-size: 1.5rem;
-  border-bottom: 5px solid orange;
-}
-
-.layout {
-  display: flex;
-  flex-direction: row;
-  margin: 20px;
-  gap: 20px;
-}
-
-.sidebar {
-  width: 250px;
-  background: #e0e0e0;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-.sidebar h2 {
-  margin-top: 0;
-}
-
-.sidebar select {
-  width: 100%;
-  padding: 5px;
-  margin-bottom: 20px;
-}
-
-.container {
-  flex-grow: 1;
-  background: white;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #2b2b2b;
+  color: #fff;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.chart-box {
-  padding: 10px;
-  background-color: gray;
-  color: white;
-  border-radius: 10px;
-}
-
-.chart-title-fixed {
-  font-size: 1.2rem;
+.dashboard-header {
+  font-size: 28px;
   font-weight: bold;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #ffffff55;
-}
-
-.chart-title {
-  font-size: 1rem;
+  margin-bottom: 20px;
   text-align: center;
-  margin-bottom: 10px;
+  color: #80deea;
 }
 
-canvas {
-  background: #004d00;
-  border-radius: 10px;
-  padding: 10px;
-}
-
-.data-table table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  background-color: white;
-}
-
-.data-table th,
-.data-table td {
-  border: 1px solid #999;
-  padding: 8px;
-  text-align: left;
-}
-
-.player-card {
-  background-color: #1b5e20;
-  color: white;
+.controls {
+  background: #1e1e1e;
   padding: 20px;
-  margin: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
 }
 
-.player-card table td {
-  padding: 5px 10px;
+label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
 }
 
-.injury-table {
-  margin: 20px;
-  background-color: #fff3e0;
-  padding: 15px;
-  border-radius: 10px;
-  border-top: 5px solid orange;
-}
-
-.injury-table table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.injury-table th,
-.injury-table td {
-  border: 1px solid #ccc;
+#playerSelect,
+#testCount {
   padding: 10px;
-  text-align: left;
+  border-radius: 6px;
+  width: 100%;
+  margin-bottom: 10px;
+  background-color: #444;
+  border: none;
+  color: white;
+}
+
+#testList {
+  list-style: none;
+  padding: 0;
+}
+
+#testList li {
+  background: #333;
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#testList button {
+  background: none;
+  border: none;
+  color: #80deea;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#generateReport {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background-color: #80deea;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#reportArea {
+  padding: 20px;
 }
