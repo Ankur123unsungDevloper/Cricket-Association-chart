@@ -3,38 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Player Performance Dashboard</title>
+  <title>Player Report</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <div class="report-container">
+    <header class="header">
+      <h1>Cricket Association</h1>
+      <div class="player-box" id="playerInfoBox"></div>
+    </header>
 
-  <div class="dashboard-header">🏏 Cricket Association - Player Report</div>
+    <section class="controls">
+      <div class="form-row">
+        <label>Select Player:
+          <select id="playerSelect"></select>
+        </label>
+        <label>Number of Recent Tests:
+          <input type="number" id="testCount" value="5" min="1" />
+        </label>
+        <label>Select Tests:
+          <input type="checkbox" value="10m Best" checked disabled> 10m Best
+        </label>
+        <button onclick="generateReport()">Generate Report</button>
+      </div>
+    </section>
 
-  <div class="controls">
-    <label for="playerSelect">Select Player:</label>
-    <select id="playerSelect">
-      <option value="PLAYER 29">PLAYER 29</option>
-      <option value="PLAYER 33">PLAYER 33</option>
-      <!-- Add more players -->
-    </select>
-
-    <label for="testCount">Number of Recent Tests:</label>
-    <input type="number" id="testCount" min="1" max="10" value="5" />
-
-    <label>Select Tests to Show:</label>
-    <ul id="testList">
-      <li data-test="YoYo">YoYo Test <button class="up">⬆️</button><button class="down">⬇️</button></li>
-      <li data-test="10m">10m Sprint <button class="up">⬆️</button><button class="down">⬇️</button></li>
-      <li data-test="20m">20m Sprint <button class="up">⬆️</button><button class="down">⬇️</button></li>
-      <li data-test="SBJ">Standing Broad Jump <button class="up">⬆️</button><button class="down">⬇️</button></li>
-    </ul>
-
-    <button id="generateReport">Generate Report</button>
+    <section id="reportContainer" class="report-grid"></section>
   </div>
 
-  <div id="reportArea"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
