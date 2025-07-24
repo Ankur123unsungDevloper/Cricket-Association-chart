@@ -1,153 +1,91 @@
-const data10m = [
-  {
-    player: "PLAYER 26",
-    date: "2023-04-02",
-    phase: "Pre-Season Assessment 2023-24",
-    trial1: 1.99,
-    trial2: 1.90,
-    best: 1.90,
-    grpAvg: 1.98,
-    indvAvg: 1.91,
-    target: 1.88
-  },
-  {
-    player: "PLAYER 29",
-    date: "2023-04-02",
-    phase: "Pre-Season Assessment 2023-24",
-    trial1: 1.94,
-    trial2: 1.91,
-    best: 1.91,
-    grpAvg: 1.98,
-    indvAvg: 1.91,
-    target: 1.88
-  },
-  {
-    player: "PLAYER 66",
-    date: "2023-04-05",
-    phase: "Pre-Season Assessment 2023-24",
-    trial1: 2.12,
-    trial2: 2.00,
-    best: 2.00,
-    grpAvg: 1.98,
-    indvAvg: 2.01,
-    target: 1.88
-  }
+const playerData = [
+  { player: "PLAYER 26", date: "2023-04-02", phase: "Pre-Season Assessment", trial1: 1.99, trial2: 1.90, best: 1.90 },
+  { player: "PLAYER 29", date: "2023-04-02", phase: "Pre-Season Assessment", trial1: 1.94, trial2: 1.91, best: 1.91 },
+  { player: "PLAYER 66", date: "2023-04-05", phase: "Pre-Season Assessment", trial1: 2.12, trial2: 2.00, best: 2.00 },
+  { player: "PLAYER 78", date: "2023-04-05", phase: "Pre-Season Assessment", trial1: 2.09, trial2: 2.00, best: 2.00 },
+  { player: "PLAYER 40", date: "2023-08-08", phase: "Buchi Babu Trophy", trial1: 1.97, trial2: 1.97, best: 1.97 },
+  { player: "PLAYER 40", date: "2024-03-07", phase: "Post Season IFA", trial1: 2.07, trial2: 2.07, best: 2.07 },
 ];
 
-window.onload = () => {
-  const uniquePlayers = [...new Set(data10m.map(d => d.player))];
-  const playerSelect = document.getElementById("playerSelect");
-  playerSelect.innerHTML = uniquePlayers.map(p => `<option>${p}</option>`).join('');
-  updatePlayerInfo(uniquePlayers[0]);
-};
+const injuryData = [
+  { name: "PLAYER 26", seasonInjury: "Nil", history: "Nil", category: "Under 23" },
+  { name: "PLAYER 29", seasonInjury: "Nil", history: "Nil", category: "Senior" },
+  { name: "PLAYER 40", seasonInjury: "Nil", history: "Right ACL complete tear 2021, Left Hamstring pull 2023", category: "Under 23" },
+  { name: "PLAYER 78", seasonInjury: "Right hand middle finger split webbing- 4 stitches, Right adductor strain", history: "Right scapula tightness", category: "Senior" },
+];
 
-document.getElementById("playerSelect").addEventListener("change", e => {
-  updatePlayerInfo(e.target.value);
+const playerSelect = document.getElementById("playerSelect");
+const reportContainer = document.getElementById("reportContainer");
+
+const uniquePlayers = [...new Set(playerData.map(d => d.player))];
+uniquePlayers.forEach(p => {
+  const option = document.createElement("option");
+  option.value = p;
+  option.textContent = p;
+  playerSelect.appendChild(option);
 });
 
-function updatePlayerInfo(player) {
-  const playerInfoBox = document.getElementById("playerInfoBox");
-  playerInfoBox.innerHTML = `
-    <p><strong>Player:</strong> ${player}</p>
-    <p><strong>Age:</strong> 28.19</p>
-    <p><strong>Role:</strong> Batsman</p>
-  `;
-}
-
 function generateReport() {
-  const player = document.getElementById("playerSelect").value;
-  const container = document.getElementById("reportContainer");
-  const testCount = parseInt(document.getElementById("testCount").value);
+  const player = playerSelect.value;
+  const count = parseInt(document.getElementById("recentCount").value);
+  const include10m = document.getElementById("test10m").checked;
 
-  const playerTests = data10m
-    .filter(d => d.player === player)
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, testCount);
+  reportContainer.innerHTML = "";
 
-  container.innerHTML = "";
+  // Update header
+  document.getElementById("playerName").textContent = player;
+  document.getElementById("playerAge").textContent = "28.19";
+  document.getElementById("playerRole").textContent = "Batsman";
 
-  playerTests.forEach(entry => {
-    const canvas = document.createElement("canvas");
-    container.appendChild(canvas);
+  if (include10m) {
+    const filtered = playerData.filter(d => d.player === player).slice(0, count);
+    const ctx = document.createElement("canvas");
+    reportContainer.appendChild(ctx);
 
-    new Chart(canvas, {
+    new Chart(ctx, {
       type: "bar",
       data: {
-        labels: [entry.phase],
+        labels: filtered.map(d => d.date + " (" + d.phase + ")"),
         datasets: [{
           label: "10m Best (sec)",
-          data: [entry.best],
-          backgroundColor: "#3399ff"
+          data: filtered.map(d => d.best),
+          backgroundColor: "#3498db"
         }]
       },
       options: {
-        plugins: {
-          legend: { labels: { color: "white" } },
-          title: {
-            display: true,
-            text: "10m Best (sec)",
-            color: "white",
-            font: { size: 16 }
-          }
-        },
         scales: {
-          x: { ticks: { color: "white" }, grid: { color: "#444" } },
-          y: {
-            beginAtZero: true,
-            ticks: { color: "white" },
-            grid: { color: "#444" }
-          }
+          y: { beginAtZero: true }
         }
-      },
-      plugins: [{
-        id: 'customLines',
-        afterDatasetsDraw(chart) {
-          const { ctx, chartArea: { left, right }, scales: { y } } = chart;
-          const lines = [
-            { label: 'GRP Avg', value: entry.grpAvg, color: 'yellow' },
-            { label: 'INDV Avg', value: entry.indvAvg, color: 'gray' },
-            { label: 'Target', value: entry.target, color: 'lime' }
-          ];
-
-          lines.forEach(line => {
-            const yPos = y.getPixelForValue(line.value);
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(left, yPos);
-            ctx.lineTo(right, yPos);
-            ctx.setLineDash([5, 5]);
-            ctx.lineWidth = 1.5;
-            ctx.strokeStyle = line.color;
-            ctx.stroke();
-            ctx.fillStyle = line.color;
-            ctx.fillText(`${line.label} (${line.value})`, right - 100, yPos - 6);
-            ctx.restore();
-          });
-        }
-      }]
+      }
     });
+  }
+
+  const injury = injuryData.find(i => i.name === player);
+  if (injury) {
+    const heading = document.createElement("h2");
+    heading.textContent = "Injury History";
+    reportContainer.appendChild(heading);
 
     const table = document.createElement("table");
     table.innerHTML = `
       <thead>
         <tr>
-          <th>Date</th><th>Phase</th><th>Trial 1</th><th>Trial 2</th>
-          <th>Best</th><th>GRP Avg</th><th>INDV Avg</th><th>Target</th>
+          <th>Injuries (2023-24)</th>
+          <th>Injury History</th>
+          <th>Eligible Category</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>${entry.date}</td>
-          <td>${entry.phase}</td>
-          <td>${entry.trial1}</td>
-          <td>${entry.trial2}</td>
-          <td>${entry.best}</td>
-          <td>${entry.grpAvg}</td>
-          <td>${entry.indvAvg}</td>
-          <td>${entry.target}</td>
+          <td>${injury.seasonInjury}</td>
+          <td>${injury.history}</td>
+          <td>${injury.category}</td>
         </tr>
       </tbody>
     `;
-    container.appendChild(table);
-  });
+    reportContainer.appendChild(table);
+  }
 }
+
+// Load default
+generateReport();
