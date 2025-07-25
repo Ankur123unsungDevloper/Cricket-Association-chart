@@ -8,27 +8,30 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="header">
-    <h1>Cricket Association</h1>
-    <p><strong>Player:</strong> <span id="playerName">PLAYER 26</span></p>
-    <p><strong>Age:</strong> <span id="playerAge">28.19</span></p>
-    <p><strong>Role:</strong> <span id="playerRole">Batsman</span></p>
-  </div>
+  <div class="container">
+    <h1>Player Performance Report</h1>
 
-  <div class="card">
+    <label for="uploadCSV">Upload CSV:</label>
+    <input type="file" id="uploadCSV" accept=".csv" />
+
     <label for="playerSelect">Select Player:</label>
     <select id="playerSelect"></select>
 
-    <label for="recentCount">Number of Recent Tests:</label>
-    <input type="number" id="recentCount" value="5" min="1" max="10" />
+    <label for="testCount">Number of Recent Tests:</label>
+    <input type="number" id="testCount" value="5" min="1" />
 
     <label>Select Tests:</label>
-    <label><input type="checkbox" id="test10m" checked /> 10m Best</label>
+    <div id="testOptions">
+      <label><input type="checkbox" value="10m" checked /> 10m Sprint</label>
+    </div>
 
     <button onclick="generateReport()">Generate Report</button>
-  </div>
 
-  <div id="reportContainer" class="card"></div>
+    <div id="reportContainer">
+      <canvas id="chartCanvas"></canvas>
+      <div id="injuryHistory"></div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

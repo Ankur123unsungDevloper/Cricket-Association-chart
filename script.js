@@ -1,91 +1,119 @@
-const playerData = [
-  { player: "PLAYER 26", date: "2023-04-02", phase: "Pre-Season Assessment", trial1: 1.99, trial2: 1.90, best: 1.90 },
-  { player: "PLAYER 29", date: "2023-04-02", phase: "Pre-Season Assessment", trial1: 1.94, trial2: 1.91, best: 1.91 },
-  { player: "PLAYER 66", date: "2023-04-05", phase: "Pre-Season Assessment", trial1: 2.12, trial2: 2.00, best: 2.00 },
-  { player: "PLAYER 78", date: "2023-04-05", phase: "Pre-Season Assessment", trial1: 2.09, trial2: 2.00, best: 2.00 },
-  { player: "PLAYER 40", date: "2023-08-08", phase: "Buchi Babu Trophy", trial1: 1.97, trial2: 1.97, best: 1.97 },
-  { player: "PLAYER 40", date: "2024-03-07", phase: "Post Season IFA", trial1: 2.07, trial2: 2.07, best: 2.07 },
-];
-
+const playerData = [];
 const injuryData = [
-  { name: "PLAYER 26", seasonInjury: "Nil", history: "Nil", category: "Under 23" },
-  { name: "PLAYER 29", seasonInjury: "Nil", history: "Nil", category: "Senior" },
-  { name: "PLAYER 40", seasonInjury: "Nil", history: "Right ACL complete tear 2021, Left Hamstring pull 2023", category: "Under 23" },
-  { name: "PLAYER 78", seasonInjury: "Right hand middle finger split webbing- 4 stitches, Right adductor strain", history: "Right scapula tightness", category: "Senior" },
+  { name: "PLAYER 78", current: "Right hand middle finger split webbing, Right adductor strain", history: "Right scapula tightness", category: "Senior" },
+  { name: "PLAYER 40", current: "Nil", history: "Right ACL tear 2021, Left Hamstring pull 2023", category: "Under 23" }
 ];
 
-const playerSelect = document.getElementById("playerSelect");
-const reportContainer = document.getElementById("reportContainer");
-
-const uniquePlayers = [...new Set(playerData.map(d => d.player))];
-uniquePlayers.forEach(p => {
-  const option = document.createElement("option");
-  option.value = p;
-  option.textContent = p;
-  playerSelect.appendChild(option);
-});
-
-function generateReport() {
-  const player = playerSelect.value;
-  const count = parseInt(document.getElementById("recentCount").value);
-  const include10m = document.getElementById("test10m").checked;
-
-  reportContainer.innerHTML = "";
-
-  // Update header
-  document.getElementById("playerName").textContent = player;
-  document.getElementById("playerAge").textContent = "28.19";
-  document.getElementById("playerRole").textContent = "Batsman";
-
-  if (include10m) {
-    const filtered = playerData.filter(d => d.player === player).slice(0, count);
-    const ctx = document.createElement("canvas");
-    reportContainer.appendChild(ctx);
-
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: filtered.map(d => d.date + " (" + d.phase + ")"),
-        datasets: [{
-          label: "10m Best (sec)",
-          data: filtered.map(d => d.best),
-          backgroundColor: "#3498db"
-        }]
-      },
-      options: {
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
+// Parse CSV into array of objects
+function parseCSV(text) {
+  const rows = text.trim().split('\n');
+  const headers = rows[0].split(',');
+  return rows.slice(1).map(row => {
+    const values = row.split(',');
+    const obj = {};
+    headers.forEach((h, i) => {
+      obj[h.trim()] = values[i].trim();
     });
-  }
+    return obj;
+  });
+}
 
+// Handle CSV upload
+function handleCSVUpload(event) {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const csvData = parseCSV(e.target.result);
+    playerData.length = 0;
+    csvData.forEach(row => {
+      playerData.push({
+        player: row.Player,
+        date: row.Date,
+        phase: row.Phase,
+        test: row.Test,
+        trial1: parseFloat(row.Trial1),
+        trial2: parseFloat(row.Trial2)
+      });
+    });
+    populatePlayerSelect();
+    generateReport();
+  };
+  reader.readAsText(file);
+}
+
+// Populate dropdown with unique player names
+function populatePlayerSelect() {
+  const select = document.getElementById("playerSelect");
+  select.innerHTML = "";
+  const players = [...new Set(playerData.map(p => p.player))];
+  players.forEach(player => {
+    const option = document.createElement("option");
+    option.value = player;
+    option.textContent = player;
+    select.appendChild(option);
+  });
+}
+
+// Generate chart and injury report
+function generateReport() {
+  const player = document.getElementById('playerSelect').value;
+  const testCount = parseInt(document.getElementById('testCount').value);
+  const tests = [...document.querySelectorAll('#testOptions input:checked')].map(e => e.value);
+
+  const filtered = playerData
+    .filter(p => p.player === player && tests.includes(p.test))
+    .slice(-testCount)
+    .map(p => ({ ...p, best: Math.min(p.trial1, p.trial2) }));
+
+  const labels = filtered.map(p => `${p.date} (${p.phase})`);
+  const data = filtered.map(p => p.best);
+
+  const ctx = document.getElementById('chartCanvas').getContext('2d');
+  if (window.bar) window.bar.destroy();
+  window.bar = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: `${player} 10m Best Time`,
+        data,
+        backgroundColor: '#3498db'
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // Show injury report
   const injury = injuryData.find(i => i.name === player);
+  const container = document.getElementById("injuryHistory");
   if (injury) {
-    const heading = document.createElement("h2");
-    heading.textContent = "Injury History";
-    reportContainer.appendChild(heading);
-
-    const table = document.createElement("table");
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th>Injuries (2023-24)</th>
-          <th>Injury History</th>
-          <th>Eligible Category</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>${injury.seasonInjury}</td>
-          <td>${injury.history}</td>
-          <td>${injury.category}</td>
-        </tr>
-      </tbody>
+    container.innerHTML = `
+      <h2>Injury History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Injuries (2023-24)</th>
+            <th>History</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${injury.current}</td>
+            <td>${injury.history}</td>
+            <td>${injury.category}</td>
+          </tr>
+        </tbody>
+      </table>
     `;
-    reportContainer.appendChild(table);
+  } else {
+    container.innerHTML = "<p>No injury history available.</p>";
   }
 }
 
-// Load default
-generateReport();
+document.getElementById("uploadCSV").addEventListener("change", handleCSVUpload);

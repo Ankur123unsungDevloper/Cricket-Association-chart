@@ -2,63 +2,91 @@ body {
   background: #111;
   color: white;
   font-family: Arial, sans-serif;
-  padding: 20px;
+  margin: 0;
+  padding: 0;
 }
 
-.header {
-  background: #005c46;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+.container {
+  padding: 40px;
+  max-width: 900px;
+  margin: auto;
 }
 
-.card {
-  background: #222;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+h1 {
+  text-align: center;
+  color: #00e676;
+  margin-bottom: 30px;
 }
 
 label {
-  margin-top: 10px;
   display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
 }
 
-input, select, button {
-  padding: 6px 10px;
-  margin-top: 6px;
+input[type="number"],
+select,
+input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 5px;
   border: none;
-  border-radius: 4px;
+  background: #222;
+  color: white;
 }
 
-input, select {
-  width: 200px;
+#testOptions {
+  margin-bottom: 15px;
 }
 
 button {
   background: #007b5e;
   color: white;
+  border: none;
+  padding: 10px 20px;
   cursor: pointer;
-  margin-top: 12px;
+  border-radius: 5px;
+  margin-top: 10px;
 }
 
 button:hover {
   background: #009971;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background: #333;
+canvas {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  margin-top: 30px;
+  padding: 10px;
 }
 
-th, td {
-  padding: 10px;
+#injuryHistory {
+  background: #222;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 10px;
+}
+
+#injuryHistory h2 {
+  color: #00e676;
+  margin-bottom: 10px;
+}
+
+#injuryHistory table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#injuryHistory th,
+#injuryHistory td {
   border: 1px solid #555;
+  padding: 10px;
   text-align: left;
 }
 
-th {
-  background: #444;
+#injuryHistory th {
+  background-color: #333;
 }
