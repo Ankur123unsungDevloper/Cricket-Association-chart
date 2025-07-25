@@ -11,18 +11,25 @@
   <div class="container">
     <h1>Player Performance Report</h1>
 
-    <label for="uploadCSV">Upload CSV:</label>
-    <input type="file" id="uploadCSV" accept=".csv" />
+    <div class="upload-box">
+      <label for="uploadCSV" class="upload-label">
+        <span>📄 Click or Drag CSV File Here</span>
+        <input type="file" id="uploadCSV" accept=".csv" />
+      </label>
+    </div>
 
-    <label for="playerSelect">Select Player:</label>
-    <select id="playerSelect"></select>
+    <div class="form-section">
+      <label for="playerSelect">🎯 Select Player:</label>
+      <select id="playerSelect"></select>
 
-    <label for="testCount">Number of Recent Tests:</label>
-    <input type="number" id="testCount" value="5" min="1" />
+      <label for="testCount">📊 Number of Recent Tests:</label>
+      <input type="number" id="testCount" value="5" min="1" />
 
-    <label>Select Tests:</label>
-    <div id="testOptions">
-      <label><input type="checkbox" value="10m" checked /> 10m Sprint</label>
+      <label>✅ Select Tests to Show:</label>
+      <div id="testOptions">
+        <label><input type="checkbox" value="10m" checked /> 10m Sprint</label>
+        <!-- Add more tests here -->
+      </div>
     </div>
 
     <button onclick="generateReport()">Generate Report</button>

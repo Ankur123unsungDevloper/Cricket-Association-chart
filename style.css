@@ -18,14 +18,41 @@ h1 {
   margin-bottom: 30px;
 }
 
-label {
-  display: block;
-  margin-top: 15px;
-  margin-bottom: 5px;
-  font-weight: bold;
+.upload-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-input[type="number"],
+.upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  height: 200px;
+  padding: 40px;
+  background-color: #222;
+  border: 2px dashed #00e676;
+  border-radius: 12px;
+  color: #ccc;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-label:hover {
+  background-color: #2b2b2b;
+  color: #fff;
+  border-color: #00ff94;
+}
+
+input#uploadCSV {
+  display: none;
+}
+
+/* input[type="number"],
 select,
 input[type="file"] {
   width: 100%;
@@ -35,6 +62,45 @@ input[type="file"] {
   border: none;
   background: #222;
   color: white;
+} */
+
+.form-section {
+  background-color: #1a1a1a;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  margin-bottom: 30px;
+  box-shadow: 0 0 10px rgba(0, 255, 140, 0.1);
+}
+
+.form-section label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #00e676;
+}
+
+.form-section select,
+.form-section input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 6px;
+}
+
+#testOptions label {
+  display: block;
+  margin: 6px 0;
+  font-weight: normal;
+  color: #ccc;
+}
+
+#testOptions input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.2);
 }
 
 #testOptions {
