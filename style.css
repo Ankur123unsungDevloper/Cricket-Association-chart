@@ -1,158 +1,173 @@
 body {
-  background: #111;
-  color: white;
-  font-family: Arial, sans-serif;
   margin: 0;
-  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f6fa;
+  color: #1a202c;
 }
 
-.container {
-  padding: 40px;
-  max-width: 900px;
-  margin: auto;
-}
-
-h1 {
-  text-align: center;
-  color: #00e676;
-  margin-bottom: 30px;
-}
-
-.upload-box {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.upload-label {
+.welcome-section {
+  height: 260px;
+  background: linear-gradient(to right, #007CF0, #00DFD8);
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  max-width: 800px;
-  height: 200px;
-  padding: 40px;
-  background-color: #222;
-  border: 2px dashed #00e676;
+  justify-content: flex-start;
+  padding: 0 2rem;
+}
+
+.welcome-section h1 {
+  font-size: 32px;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.main-card {
+  max-width: 1200px;
+  margin: -80px auto 2rem auto; /* Pull it up to overlap welcome section */
+  background-color: #fff;
   border-radius: 12px;
-  color: #ccc;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  padding: 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10;
 }
 
-.upload-label:hover {
-  background-color: #2b2b2b;
-  color: #fff;
-  border-color: #00ff94;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
-input#uploadCSV {
+.card-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+#importCSV {
   display: none;
 }
 
-/* input[type="number"],
-select,
-input[type="file"] {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: none;
-  background: #222;
-  color: white;
-} */
-
-.form-section {
-  background-color: #1a1a1a;
-  padding: 25px;
-  border-radius: 12px;
-  border: 1px solid #333;
-  margin-bottom: 30px;
-  box-shadow: 0 0 10px rgba(0, 255, 140, 0.1);
+.import-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
 }
 
-.form-section label {
-  display: block;
-  margin-bottom: 10px;
-  font-weight: 600;
-  color: #00e676;
-}
-
-.form-section select,
-.form-section input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  background-color: #222;
+.import-button {
+  display: inline-flex;
+  align-items: center;
+  background-color: #0f172a;
   color: #fff;
-  border: 1px solid #333;
-  border-radius: 6px;
-}
-
-#testOptions label {
-  display: block;
-  margin: 6px 0;
-  font-weight: normal;
-  color: #ccc;
-}
-
-#testOptions input[type="checkbox"] {
-  margin-right: 10px;
-  transform: scale(1.2);
-}
-
-#testOptions {
-  margin-bottom: 15px;
-}
-
-button {
-  background: #007b5e;
-  color: white;
-  border: none;
-  padding: 10px 20px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  border-radius: 5px;
-  margin-top: 10px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.import-button:hover {
+  background-color: #1e293b;
+}
+
+.upload-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.form-container {
+  display: grid;
+  grid-template-columns: 0.6fr 1.4fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e7eb;
+}
+
+/* Labels */
+label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Inputs and selects */
+.input,
+input[type="date"],
+select {
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input:focus,
+input[type="date"]:focus,
+select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Slider */
+input[type="range"] {
+  width: 100%;
+  accent-color: #2563eb;
+  margin-top: 4px;
+}
+
+/* Checkboxes */
+.checkbox-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Button */
+button {
+  background-color: #ef4444;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  width: fit-content;
+  margin-top: 0.5rem;
 }
 
 button:hover {
-  background: #009971;
+  background-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
-canvas {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  margin-top: 30px;
-  padding: 10px;
-}
-
-#injuryHistory {
-  background: #222;
-  padding: 20px;
-  margin-top: 30px;
-  border-radius: 10px;
-}
-
-#injuryHistory h2 {
-  color: #00e676;
-  margin-bottom: 10px;
-}
-
-#injuryHistory table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-#injuryHistory th,
-#injuryHistory td {
-  border: 1px solid #555;
-  padding: 10px;
-  text-align: left;
-}
-
-#injuryHistory th {
-  background-color: #333;
+/* Right side - Chart */
+.chart-container {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

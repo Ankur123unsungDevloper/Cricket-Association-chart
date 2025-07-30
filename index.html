@@ -2,43 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cricket Player Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Player Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Player Performance Report</h1>
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <h1>Welcome</h1>
+  </div>
 
-    <div class="upload-box">
-      <label for="uploadCSV" class="upload-label">
-        <span>📄 Click or Drag CSV File Here</span>
-        <input type="file" id="uploadCSV" accept=".csv" />
-      </label>
-    </div>
-
-    <div class="form-section">
-      <label for="playerSelect">🎯 Select Player:</label>
-      <select id="playerSelect"></select>
-
-      <label for="testCount">📊 Number of Recent Tests:</label>
-      <input type="number" id="testCount" value="5" min="1" />
-
-      <label>✅ Select Tests to Show:</label>
-      <div id="testOptions">
-        <label><input type="checkbox" value="10m" checked /> 10m Sprint</label>
-        <!-- Add more tests here -->
+  <!-- Main Card Section -->
+  <main class="main-card">
+    <div class="card-header">
+      <h2>Player Records</h2>
+      <div class="import-wrapper">
+        <input type="file" id="uploadCSV" accept=".csv" hidden />
+        <label for="uploadCSV" class="import-button">
+          <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12" />
+          </svg>
+          Import
+        </label>
       </div>
     </div>
 
-    <button onclick="generateReport()">Generate Report</button>
+    <!-- Form Inputs -->
+    <div class="form-container">
+      <div class="form-group">
+        <label for="playerSelect">Player Name:</label>
+        <select id="playerSelect" class="input"></select>
 
-    <div id="reportContainer">
-      <canvas id="chartCanvas"></canvas>
-      <div id="injuryHistory"></div>
+        <label for="dateInput">Date:</label>
+        <input type="date" id="dateInput" class="input" />
+
+        <label for="phaseInput">Phase:</label>
+        <input type="text" id="phaseInput" class="input" placeholder="Enter phase..." />
+
+        <label for="testCount">Number of Recent Tests: <span id="testCountValue">5</span></label>
+        <input type="range" id="testCount" min="1" max="20" value="5" />
+
+        <label>Choose Tests:</label>
+        <div id="testOptions" class="checkbox-group">
+          <label><input type="checkbox" value="10m" checked /> 10m Sprint</label>
+        </div>
+
+        <button onclick="generateReport()">Fetch Report</button>
+      </div>
+
+      <!-- Chart Canvas -->
+      <div class="chart-container">
+        <canvas id="chartCanvas"></canvas>
+      </div>
     </div>
-  </div>
+  </main>
 
   <script src="script.js"></script>
 </body>

@@ -1,24 +1,20 @@
 const playerData = [];
 const injuryData = [
-  { name: "PLAYER 78", current: "Right hand middle finger split webbing, Right adductor strain", history: "Right scapula tightness", category: "Senior" },
-  { name: "PLAYER 40", current: "Nil", history: "Right ACL tear 2021, Left Hamstring pull 2023", category: "Under 23" }
+  { name: "PLAYER 78", current: "Right hand finger injury", history: "Scapula tightness", category: "Senior" },
+  { name: "PLAYER 40", current: "Nil", history: "Right ACL tear, Hamstring pull", category: "Under 23" }
 ];
 
-// Parse CSV into array of objects
 function parseCSV(text) {
   const rows = text.trim().split('\n');
   const headers = rows[0].split(',');
   return rows.slice(1).map(row => {
     const values = row.split(',');
     const obj = {};
-    headers.forEach((h, i) => {
-      obj[h.trim()] = values[i].trim();
-    });
+    headers.forEach((h, i) => obj[h.trim()] = values[i].trim());
     return obj;
   });
 }
 
-// Handle CSV upload
 function handleCSVUpload(event) {
   const file = event.target.files[0];
   const reader = new FileReader();
@@ -41,7 +37,6 @@ function handleCSVUpload(event) {
   reader.readAsText(file);
 }
 
-// Populate dropdown with unique player names
 function populatePlayerSelect() {
   const select = document.getElementById("playerSelect");
   select.innerHTML = "";
@@ -54,7 +49,6 @@ function populatePlayerSelect() {
   });
 }
 
-// Generate chart and injury report
 function generateReport() {
   const player = document.getElementById('playerSelect').value;
   const testCount = parseInt(document.getElementById('testCount').value);
@@ -75,9 +69,9 @@ function generateReport() {
     data: {
       labels,
       datasets: [{
-        label: `${player} 10m Best Time`,
+        label: `${player} - Best Performance`,
         data,
-        backgroundColor: '#3498db'
+        backgroundColor: '#2563eb'
       }]
     },
     options: {
@@ -87,33 +81,10 @@ function generateReport() {
       }
     }
   });
-
-  // Show injury report
-  const injury = injuryData.find(i => i.name === player);
-  const container = document.getElementById("injuryHistory");
-  if (injury) {
-    container.innerHTML = `
-      <h2>Injury History</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Injuries (2023-24)</th>
-            <th>History</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>${injury.current}</td>
-            <td>${injury.history}</td>
-            <td>${injury.category}</td>
-          </tr>
-        </tbody>
-      </table>
-    `;
-  } else {
-    container.innerHTML = "<p>No injury history available.</p>";
-  }
 }
 
 document.getElementById("uploadCSV").addEventListener("change", handleCSVUpload);
+
+document.getElementById('testCount').addEventListener('input', () => {
+  document.getElementById('testCountValue').textContent = document.getElementById('testCount').value;
+});
