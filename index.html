@@ -28,13 +28,16 @@
 
     <div class="form-container">
       <div class="form-fields">
-        <label for="dateInput">Date</label>
-        <input type="date" id="dateInput" class="input">
+        <div class="date-wrapper">
+          <input type="date" id="dateInput" class="input date-input" />
+        </div>
 
-        <label for="playerSelect">Player Name</label>
-        <select id="playerSelect" class="input">
-          <option>Select a player</option>
-        </select>
+        <div class="select-wrapper">
+          <label for="playerSelect">Select Player</label>
+          <select id="playerSelect" class="custom-select">
+            <option disabled selected>Select a player</option>
+          </select>
+        </div>
 
         <label for="testCountSelect">Number of Recent Tests</label>
         <select id="testCountSelect" class="input">
@@ -56,7 +59,7 @@
         <button type="button" onclick="generateReport()">Fetch Report</button>
       </div>
 
-      <div style="background-color: aqua;" class="chart-container">
+      <div class="chart-container">
         <canvas id="chartCanvas"></canvas>
       </div>
     </div>

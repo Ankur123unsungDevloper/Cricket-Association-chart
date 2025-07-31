@@ -23,7 +23,7 @@ body {
 
 .main-card {
   max-width: 1200px;
-  margin: -80px auto 2rem auto; /* Pull it up to overlap welcome section */
+  margin: -80px auto 2rem auto;
   background-color: #fff;
   border-radius: 12px;
   padding: 2rem;
@@ -39,11 +39,6 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.card-header h2 {
-  font-size: 20px;
-  font-weight: 600;
-}
-
 #importCSV {
   display: none;
 }
@@ -51,7 +46,6 @@ body {
 .import-wrapper {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 1.5rem;
 }
 
 .import-button {
@@ -79,11 +73,12 @@ body {
 }
 
 .form-container {
-  display: grid;
-  grid-template-columns: 0.6fr 1.4fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
   margin-bottom: 2rem;
   padding: 2rem;
+  align-items: flex-start;
 }
 
 .form-fields {
@@ -97,21 +92,82 @@ body {
   border: 1px solid #e5e7eb;
   width: 100%;
   max-width: 340px;
-  min-height: 100%;
-  justify-content: center;
 }
 
 .form-fields label {
   font-size: 14px;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 0.25rem;
 }
 
-/* Inputs and Selects */
-.form-fields .input,
-.form-fields input[type="date"],
-.form-fields select {
+.date-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.date-wrapper input[type="date"] {
+  padding-left: 2.5rem;
+  font-size: 15px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background-color: #f9fafb;
+  color: #111827;
+  width: 100%;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg fill='gray' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM5 20V9h14v11H5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  background-size: 18px 18px;
+
+  /* ✅ This hides the browser's right-side icon but retains the calendar popup */
+  /* For WebKit (Chrome, Safari, Edge) */
+  &::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  /* For Firefox */
+  &::-moz-focus-inner {
+    border: 0;
+  }
+}
+
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select {
+  appearance: none;
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem; /* room for icon */
+  font-size: 15px;
+  font-weight: 500;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background-color: #f9fafb;
+  color: #111827;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' viewBox='0 0 24 24' width='20' height='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  background-color: #fff;
+}
+
+.input,
+select {
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 15px;
@@ -123,17 +179,15 @@ body {
   color: #111827;
 }
 
-.form-fields .input:focus,
-.form-fields input[type="date"]:focus,
-.form-fields select:focus {
+.input:focus,
+select:focus {
   outline: none;
   border-color: #2563eb;
   background-color: #fff;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
-/* Dropdown caret styling (optional) */
-.form-fields select {
+select {
   appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='24' viewBox='0 0 24 24' width='24'><path d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
@@ -141,8 +195,7 @@ body {
   background-size: 1rem;
 }
 
-/* Submit Button */
-.form-fields button {
+button {
   background-color: #0f172a;
   color: white;
   font-weight: 700;
@@ -154,13 +207,13 @@ body {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.form-fields button:hover {
+button:hover {
   background-color: #1e293b;
   transform: translateY(-1px);
 }
 
-/* Right side - Chart */
 .chart-container {
+  flex: 1 1 600px;
   background-color: #fff;
   padding: 1.5rem;
   border-radius: 12px;
@@ -168,4 +221,17 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 400px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .form-container {
+    flex-direction: column;
+  }
+
+  .form-fields,
+  .chart-container {
+    max-width: 100%;
+  }
 }

@@ -34,7 +34,7 @@ function handleCSVUpload(event) {
 
 function populatePlayerSelect() {
   const select = document.getElementById("playerSelect");
-  select.innerHTML = "<option>Select a player</option>";
+  select.innerHTML = '<option disabled selected>Select a player</option>';
   const players = [...new Set(playerData.map(p => p.player))];
   players.forEach(player => {
     const option = document.createElement("option");
