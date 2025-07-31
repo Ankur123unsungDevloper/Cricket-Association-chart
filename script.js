@@ -1,8 +1,4 @@
 const playerData = [];
-const injuryData = [
-  { name: "PLAYER 78", current: "Right hand finger injury", history: "Scapula tightness", category: "Senior" },
-  { name: "PLAYER 40", current: "Nil", history: "Right ACL tear, Hamstring pull", category: "Under 23" }
-];
 
 function parseCSV(text) {
   const rows = text.trim().split('\n');
@@ -32,14 +28,13 @@ function handleCSVUpload(event) {
       });
     });
     populatePlayerSelect();
-    generateReport();
   };
   reader.readAsText(file);
 }
 
 function populatePlayerSelect() {
   const select = document.getElementById("playerSelect");
-  select.innerHTML = "";
+  select.innerHTML = "<option>Select a player</option>";
   const players = [...new Set(playerData.map(p => p.player))];
   players.forEach(player => {
     const option = document.createElement("option");
@@ -50,28 +45,28 @@ function populatePlayerSelect() {
 }
 
 function generateReport() {
-  const player = document.getElementById('playerSelect').value;
-  const testCount = parseInt(document.getElementById('testCount').value);
-  const tests = [...document.querySelectorAll('#testOptions input:checked')].map(e => e.value);
+  const player = document.getElementById("playerSelect").value;
+  const testCount = parseInt(document.getElementById("testCountSelect").value);
+  const selectedTest = document.getElementById("testTypeSelect").value;
 
   const filtered = playerData
-    .filter(p => p.player === player && tests.includes(p.test))
+    .filter(p => p.player === player && p.test === selectedTest)
     .slice(-testCount)
     .map(p => ({ ...p, best: Math.min(p.trial1, p.trial2) }));
 
   const labels = filtered.map(p => `${p.date} (${p.phase})`);
   const data = filtered.map(p => p.best);
 
-  const ctx = document.getElementById('chartCanvas').getContext('2d');
+  const ctx = document.getElementById("chartCanvas").getContext("2d");
   if (window.bar) window.bar.destroy();
   window.bar = new Chart(ctx, {
-    type: 'bar',
+    type: "bar",
     data: {
       labels,
       datasets: [{
         label: `${player} - Best Performance`,
         data,
-        backgroundColor: '#2563eb'
+        backgroundColor: "#2563eb"
       }]
     },
     options: {
@@ -84,7 +79,3 @@ function generateReport() {
 }
 
 document.getElementById("uploadCSV").addEventListener("change", handleCSVUpload);
-
-document.getElementById('testCount').addEventListener('input', () => {
-  document.getElementById('testCountValue').textContent = document.getElementById('testCount').value;
-});

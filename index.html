@@ -1,59 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Player Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Welcome Section -->
   <div class="welcome-section">
     <h1>Welcome</h1>
   </div>
 
-  <!-- Main Card Section -->
   <main class="main-card">
     <div class="card-header">
       <h2>Player Records</h2>
       <div class="import-wrapper">
-        <input type="file" id="uploadCSV" accept=".csv" hidden />
+        <input type="file" id="uploadCSV" accept=".csv" hidden>
         <label for="uploadCSV" class="import-button">
           <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12" />
           </svg>
           Import
         </label>
       </div>
     </div>
 
-    <!-- Form Inputs -->
     <div class="form-container">
-      <div class="form-group">
-        <label for="playerSelect">Player Name:</label>
-        <select id="playerSelect" class="input"></select>
+      <div class="form-fields">
+        <label for="dateInput">Date</label>
+        <input type="date" id="dateInput" class="input">
 
-        <label for="dateInput">Date:</label>
-        <input type="date" id="dateInput" class="input" />
+        <label for="playerSelect">Player Name</label>
+        <select id="playerSelect" class="input">
+          <option>Select a player</option>
+        </select>
 
-        <label for="phaseInput">Phase:</label>
-        <input type="text" id="phaseInput" class="input" placeholder="Enter phase..." />
+        <label for="testCountSelect">Number of Recent Tests</label>
+        <select id="testCountSelect" class="input">
+          <script>
+            for (let i = 1; i <= 20; i++) {
+              document.write(`<option value="${i}">${i}</option>`);
+            }
+          </script>
+        </select>
 
-        <label for="testCount">Number of Recent Tests: <span id="testCountValue">5</span></label>
-        <input type="range" id="testCount" min="1" max="20" value="5" />
+        <label for="testTypeSelect">Choose Test</label>
+        <select id="testTypeSelect" class="input">
+          <option value="10m Sprint">10m Sprint</option>
+          <option value="20m Sprint">20m Sprint</option>
+          <option value="Agility Test">Agility Test</option>
+          <option value="Stamina Drill">Stamina Drill</option>
+        </select>
 
-        <label>Choose Tests:</label>
-        <div id="testOptions" class="checkbox-group">
-          <label><input type="checkbox" value="10m" checked /> 10m Sprint</label>
-        </div>
-
-        <button onclick="generateReport()">Fetch Report</button>
+        <button type="button" onclick="generateReport()">Fetch Report</button>
       </div>
 
-      <!-- Chart Canvas -->
-      <div class="chart-container">
+      <div style="background-color: aqua;" class="chart-container">
         <canvas id="chartCanvas"></canvas>
       </div>
     </div>
