@@ -1,88 +1,111 @@
+// ✅ Global variables
 let playerData = [];
 let chart;
 
-document.getElementById("uploadCSV").addEventListener("change", handleCSVUpload);
+// ✅ Headers to be treated as test categories
+const testHeaders = {
+  "Yo-Yo Level": "Yo-Yo Test",
+  "20m Best (sec)": "20m",
+  "10m Best (sec)": "10m",
+  "SBJ Best (mts)": "SBJ",
+  "S/L Hop Left": "S/L Hop",
+  "Copenhagen (Sec)": "Copenhagen (Sec)",
+  "Push Ups": "Push Ups",
+  "2 KM": "2 KM",
+  "Run A 3 Best(sec)": "Run A 3*6",
+  "1 Mile": "1 Mile",
+  "MB Abs Throws": "MB Abs Throws",
+  "Counter Movement Jump": "Counter Movement Jump",
+  "SL Lunge Calf Raises": "SL Lunge Calf Raises"
+};
 
-function handleCSVUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
+// ✅ Handle CSV Upload
+document.getElementById("uploadCSV").addEventListener("change", function (e) {
+  const file = e.target.files[0];
   const reader = new FileReader();
-  reader.onload = function (e) {
-    const content = e.target.result;
-    parseCSV(content);
+
+  reader.onload = function (event) {
+    const csv = event.target.result;
+    const rows = csv.split("\n").map(row => row.split(","));
+
+    let headers = [];
+    let collecting = false;
+    playerData = [];
+
+    for (let row of rows) {
+      if (row.includes("Player") && row.includes("Phase")) {
+        headers = row.map(h => h.trim());
+        collecting = true;
+        continue;
+      }
+
+      if (collecting && row.length > 1) {
+        const obj = {};
+        headers.forEach((h, i) => (obj[h] = row[i]?.trim()));
+        if (obj["Player"]) playerData.push(obj);
+      }
+    }
+
+    if (headers.length === 0) {
+      alert("Couldn't find header row with 'Player'.");
+      return;
+    }
+
+    populatePlayerDropdown();
+    populateTestDropdown(headers);
   };
+
   reader.readAsText(file);
-}
+});
 
-function parseCSV(csv) {
-  const lines = csv.trim().split(/\r?\n/).map(row => row.split(",").map(cell => cell.trim()));
-  let headerIndex = lines.findIndex(row => row.includes("Player") && row.includes("Date"));
-
-  if (headerIndex === -1) {
-    alert("CSV must include 'Player' and 'Date' columns.");
-    return;
-  }
-
-  const headers = lines[headerIndex];
-  playerData = lines.slice(headerIndex + 1).map(row => {
-    const obj = {};
-    headers.forEach((h, i) => obj[h.trim()] = row[i] || "");
-    return obj;
-  });
-
-  populatePlayerDropdown();
-  populateTestDropdown(headers);
-}
-
+// ✅ Populate Player List
 function populatePlayerDropdown() {
   const playerSelect = document.getElementById("playerSelect");
-  playerSelect.innerHTML = `<option disabled selected>Select a player</option>`;
-
-  const uniquePlayers = [...new Set(playerData.map(d => d["Player"]).filter(Boolean))];
-
+  playerSelect.innerHTML = '<option disabled selected>Select a player</option>';
+  const uniquePlayers = [...new Set(playerData.map(d => d.Player).filter(Boolean))];
   uniquePlayers.forEach(player => {
-    const opt = document.createElement("option");
-    opt.value = player;
-    opt.textContent = player;
-    playerSelect.appendChild(opt);
+    const option = document.createElement("option");
+    option.value = player;
+    option.textContent = player;
+    playerSelect.appendChild(option);
   });
 }
 
+// ✅ Populate Test List
 function populateTestDropdown(headers) {
   const testSelect = document.getElementById("testTypeSelect");
-  testSelect.innerHTML = `<option disabled selected>Select a test</option>`;
-
-  const testColumns = headers.filter(h => !["Player", "Date", "Phase", "Age Category"].includes(h));
-  testColumns.forEach(test => {
-    const opt = document.createElement("option");
-    opt.value = test;
-    opt.textContent = test;
-    testSelect.appendChild(opt);
+  testSelect.innerHTML = '<option disabled selected>Select a test</option>';
+  const availableHeaders = Object.keys(testHeaders).filter(header => headers.includes(header));
+  availableHeaders.forEach(header => {
+    const option = document.createElement("option");
+    option.value = header; // use actual CSV header
+    option.textContent = testHeaders[header]; // show friendly label
+    testSelect.appendChild(option);
   });
 }
 
+// ✅ Generate Chart
 function generateReport() {
-  const player = document.getElementById("playerSelect").value;
-  const test = document.getElementById("testTypeSelect").value;
-  const count = parseInt(document.getElementById("testCountSelect").value);
+  const playerName = document.getElementById("playerSelect").value;
+  const selectedTestHeader = document.getElementById("testTypeSelect").value;
+  const testCount = parseInt(document.getElementById("testCountSelect").value);
 
-  if (!player || !test || isNaN(count)) {
+  if (!playerName || !selectedTestHeader || isNaN(testCount)) {
     alert("Please select all fields");
     return;
   }
 
   const filtered = playerData
-    .filter(row => row["Player"] === player && row[test])
-    .slice(-count);
+    .filter(d => d.Player === playerName && d[selectedTestHeader])
+    .slice(-testCount);
 
   if (filtered.length === 0) {
-    alert("No matching data found for this player and test.");
+    alert("No data available for selected player & test");
     return;
   }
 
-  const labels = filtered.map(d => d["Date"] || "");
-  const values = filtered.map(d => parseFloat(d[test]) || 0);
+  const labels = filtered.map(d => d.Date || d.Phase || "");
+  const values = filtered.map(d => parseFloat(d[selectedTestHeader]) || null);
 
   if (chart) chart.destroy();
 
@@ -91,12 +114,14 @@ function generateReport() {
     type: "bar",
     data: {
       labels,
-      datasets: [{
-        label: `${player} - ${test}`,
-        data: values,
-        backgroundColor: "#3b82f6",
-        borderRadius: 6,
-      }]
+      datasets: [
+        {
+          label: `${playerName} - ${testHeaders[selectedTestHeader]}`,
+          data: values,
+          backgroundColor: "#3b82f6",
+          borderRadius: 6,
+        },
+      ],
     },
     options: {
       responsive: true,
@@ -104,15 +129,15 @@ function generateReport() {
         title: {
           display: true,
           text: "Performance Chart",
-          font: { size: 18 }
-        }
+          font: { size: 20 },
+        },
       },
       scales: {
         y: {
           beginAtZero: true,
-          title: { display: true, text: "Score / Time / Value" }
-        }
-      }
-    }
+          title: { display: true, text: "Score / Time" },
+        },
+      },
+    },
   });
 }
