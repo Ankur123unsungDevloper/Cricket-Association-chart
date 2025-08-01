@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Player Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
   <div class="welcome-section">
@@ -50,12 +48,10 @@
           </script>
         </select>
 
+        <!-- ✅ MODIFIED: Dynamic Test Dropdown -->
         <label for="testTypeSelect">Choose Test</label>
-        <select id="testTypeSelect" class="input">
-          <option value="10m Sprint">10m Sprint</option>
-          <option value="20m Sprint">20m Sprint</option>
-          <option value="Agility Test">Agility Test</option>
-          <option value="Stamina Drill">Stamina Drill</option>
+        <select id="testTypeSelect" class="custom-select">
+          <option disabled selected>Select a test</option>
         </select>
 
         <button type="button" onclick="generateReport()">Fetch Report</button>

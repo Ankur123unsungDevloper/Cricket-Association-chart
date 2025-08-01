@@ -235,3 +235,19 @@ button:hover {
     max-width: 100%;
   }
 }
+
+.custom-select {
+  appearance: none;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  font-size: 15px;
+  font-weight: 500;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background-color: #f9fafb;
+  color: #111827;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' viewBox='0 0 24 24' width='20' height='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  transition: all 0.2s ease;
+}

@@ -1,69 +1,118 @@
 let playerData = [];
+let chart;
 
 document.getElementById("uploadCSV").addEventListener("change", handleCSVUpload);
 
-function handleCSVUpload(e) {
-  const file = e.target.files[0];
+function handleCSVUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
   const reader = new FileReader();
-
-  reader.onload = function (event) {
-    const data = event.target.result;
-    const workbook = XLSX.read(data, { type: "binary" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    playerData = [];
-    let headers = [];
-    let collecting = false;
-
-    for (let row of rows) {
-      if (row.includes("Player") && row.includes("Trial1")) {
-        headers = row;
-        collecting = true;
-        continue;
-      }
-
-      if (collecting) {
-        const obj = {};
-        headers.forEach((h, i) => (obj[h] = row[i]));
-        if (obj.Player) playerData.push(obj);
-      }
-    }
-
-    populatePlayerDropdown();
+  reader.onload = function (e) {
+    const content = e.target.result;
+    parseCSV(content);
   };
+  reader.readAsText(file);
+}
 
-  reader.readAsBinaryString(file);
+function parseCSV(csv) {
+  const lines = csv.trim().split(/\r?\n/).map(row => row.split(",").map(cell => cell.trim()));
+  let headerIndex = lines.findIndex(row => row.includes("Player") && row.includes("Date"));
+
+  if (headerIndex === -1) {
+    alert("CSV must include 'Player' and 'Date' columns.");
+    return;
+  }
+
+  const headers = lines[headerIndex];
+  playerData = lines.slice(headerIndex + 1).map(row => {
+    const obj = {};
+    headers.forEach((h, i) => obj[h.trim()] = row[i] || "");
+    return obj;
+  });
+
+  populatePlayerDropdown();
+  populateTestDropdown(headers);
 }
 
 function populatePlayerDropdown() {
   const playerSelect = document.getElementById("playerSelect");
-  playerSelect.innerHTML = '<option disabled selected>Select a player</option>';
+  playerSelect.innerHTML = `<option disabled selected>Select a player</option>`;
 
-  const uniqueNames = [...new Set(playerData.map(d => d.Player).filter(Boolean))];
-  uniqueNames.forEach(name => {
-    const option = document.createElement("option");
-    option.value = name;
-    option.textContent = name;
-    playerSelect.appendChild(option);
+  const uniquePlayers = [...new Set(playerData.map(d => d["Player"]).filter(Boolean))];
+
+  uniquePlayers.forEach(player => {
+    const opt = document.createElement("option");
+    opt.value = player;
+    opt.textContent = player;
+    playerSelect.appendChild(opt);
   });
 }
 
-document.getElementById("playerSelect").addEventListener("change", function () {
-  const selectedPlayer = this.value;
-  const tests = [...new Set(playerData
-    .filter(d => d.Player === selectedPlayer)
-    .map(d => d.Test)
-    .filter(Boolean)
-  )];
-
+function populateTestDropdown(headers) {
   const testSelect = document.getElementById("testTypeSelect");
-  testSelect.innerHTML = '<option disabled selected>Select test</option>';
+  testSelect.innerHTML = `<option disabled selected>Select a test</option>`;
 
-  tests.forEach(test => {
-    const option = document.createElement("option");
-    option.value = test;
-    option.textContent = test;
-    testSelect.appendChild(option);
+  const testColumns = headers.filter(h => !["Player", "Date", "Phase", "Age Category"].includes(h));
+  testColumns.forEach(test => {
+    const opt = document.createElement("option");
+    opt.value = test;
+    opt.textContent = test;
+    testSelect.appendChild(opt);
   });
-});
+}
+
+function generateReport() {
+  const player = document.getElementById("playerSelect").value;
+  const test = document.getElementById("testTypeSelect").value;
+  const count = parseInt(document.getElementById("testCountSelect").value);
+
+  if (!player || !test || isNaN(count)) {
+    alert("Please select all fields");
+    return;
+  }
+
+  const filtered = playerData
+    .filter(row => row["Player"] === player && row[test])
+    .slice(-count);
+
+  if (filtered.length === 0) {
+    alert("No matching data found for this player and test.");
+    return;
+  }
+
+  const labels = filtered.map(d => d["Date"] || "");
+  const values = filtered.map(d => parseFloat(d[test]) || 0);
+
+  if (chart) chart.destroy();
+
+  const ctx = document.getElementById("chartCanvas").getContext("2d");
+  chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: `${player} - ${test}`,
+        data: values,
+        backgroundColor: "#3b82f6",
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: "Performance Chart",
+          font: { size: 18 }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: "Score / Time / Value" }
+        }
+      }
+    }
+  });
+}
