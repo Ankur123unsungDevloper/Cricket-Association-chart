@@ -4,19 +4,22 @@ let chart;
 
 // ✅ Headers to be treated as test categories
 const testHeaders = {
-  "Yo-Yo Level": "Yo-Yo Test",
-  "20m Best (sec)": "20m",
   "10m Best (sec)": "10m",
+  "20m Best (sec)": "20m",
+  "40m Best (sec)": "40m",
+  "Yo-Yo Level": "YoYo",
   "SBJ Best (mts)": "SBJ",
-  "S/L Hop Left": "S/L Hop",
+  "S/L Glute Bridges (Sec)": "S/L Glute Bridges (Sec)",
+  "SL Lunge Calf Raises": "SL Lunge Calf Raises",
+  "MB Rotational Throws": "MB Rotational Throws",
   "Copenhagen (Sec)": "Copenhagen (Sec)",
-  "Push Ups": "Push Ups",
-  "2 KM": "2 KM",
-  "Run A 3 Best(sec)": "Run A 3*6",
-  "1 Mile": "1 Mile",
-  "MB Abs Throws": "MB Abs Throws",
-  "Counter Movement Jump": "Counter Movement Jump",
-  "SL Lunge Calf Raises": "SL Lunge Calf Raises"
+  "S/L Hop Left": "S/L Hop",
+  "Run A 3 Best(sec)": "Run A 3",
+  "Run A 3×6 Best(sec)": "Run A 3×6",
+  "1 Mile Time (min)": "1 Mile",
+  "Push-ups Count": "Push-ups",
+  "2 KM Time (min)": "2 KM",
+  "CMJ Score": "CMJ Scores"
 };
 
 // ✅ Handle CSV Upload
@@ -72,17 +75,18 @@ function populatePlayerDropdown() {
 }
 
 // ✅ Populate Test List
-function populateTestDropdown(headers) {
+function populateTestDropdown() {
   const testSelect = document.getElementById("testTypeSelect");
   testSelect.innerHTML = '<option disabled selected>Select a test</option>';
-  const availableHeaders = Object.keys(testHeaders).filter(header => headers.includes(header));
-  availableHeaders.forEach(header => {
+
+  Object.entries(testHeaders).forEach(([csvHeader, displayName]) => {
     const option = document.createElement("option");
-    option.value = header; // use actual CSV header
-    option.textContent = testHeaders[header]; // show friendly label
+    option.value = csvHeader;           // actual CSV header
+    option.textContent = displayName;   // user-friendly label
     testSelect.appendChild(option);
   });
 }
+
 
 // ✅ Generate Chart
 function generateReport() {
