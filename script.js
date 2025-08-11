@@ -1,8 +1,8 @@
-// ✅ Global variables
+// script.js
+
 let playerData = [];
 let chart;
 
-// ✅ Headers to be treated as test categories
 const testHeaders = {
   "10m Best (sec)": "10m",
   "20m Best (sec)": "20m",
@@ -22,15 +22,15 @@ const testHeaders = {
   "CMJ Score": "CMJ Scores"
 };
 
-// ✅ Handle CSV Upload
+// Handle CSV Upload
 document.getElementById("uploadCSV").addEventListener("change", function (e) {
   const file = e.target.files[0];
-  const reader = new FileReader();
+  if (!file) return;
 
+  const reader = new FileReader();
   reader.onload = function (event) {
     const csv = event.target.result;
     const rows = csv.split("\n").map(row => row.split(","));
-
     let headers = [];
     let collecting = false;
     playerData = [];
@@ -41,7 +41,6 @@ document.getElementById("uploadCSV").addEventListener("change", function (e) {
         collecting = true;
         continue;
       }
-
       if (collecting && row.length > 1) {
         const obj = {};
         headers.forEach((h, i) => (obj[h] = row[i]?.trim()));
@@ -55,13 +54,11 @@ document.getElementById("uploadCSV").addEventListener("change", function (e) {
     }
 
     populatePlayerDropdown();
-    populateTestDropdown(headers);
+    populateTestDropdown();
   };
-
   reader.readAsText(file);
 });
 
-// ✅ Populate Player List
 function populatePlayerDropdown() {
   const playerSelect = document.getElementById("playerSelect");
   playerSelect.innerHTML = '<option disabled selected>Select a player</option>';
@@ -74,21 +71,17 @@ function populatePlayerDropdown() {
   });
 }
 
-// ✅ Populate Test List
 function populateTestDropdown() {
   const testSelect = document.getElementById("testTypeSelect");
   testSelect.innerHTML = '<option disabled selected>Select a test</option>';
-
   Object.entries(testHeaders).forEach(([csvHeader, displayName]) => {
     const option = document.createElement("option");
-    option.value = csvHeader;           // actual CSV header
-    option.textContent = displayName;   // user-friendly label
+    option.value = csvHeader;
+    option.textContent = displayName;
     testSelect.appendChild(option);
   });
 }
 
-
-// ✅ Generate Chart
 function generateReport() {
   const playerName = document.getElementById("playerSelect").value;
   const selectedTestHeader = document.getElementById("testTypeSelect").value;
@@ -112,20 +105,18 @@ function generateReport() {
   const values = filtered.map(d => parseFloat(d[selectedTestHeader]) || null);
 
   if (chart) chart.destroy();
-
   const ctx = document.getElementById("chartCanvas").getContext("2d");
+
   chart = new Chart(ctx, {
     type: "bar",
     data: {
       labels,
-      datasets: [
-        {
-          label: `${playerName} - ${testHeaders[selectedTestHeader]}`,
-          data: values,
-          backgroundColor: "#3b82f6",
-          borderRadius: 6,
-        },
-      ],
+      datasets: [{
+        label: `${playerName} - ${testHeaders[selectedTestHeader]}`,
+        data: values,
+        backgroundColor: "#3b82f6",
+        borderRadius: 6
+      }]
     },
     options: {
       responsive: true,
@@ -133,15 +124,15 @@ function generateReport() {
         title: {
           display: true,
           text: "Performance Chart",
-          font: { size: 20 },
-        },
+          font: { size: 20 }
+        }
       },
       scales: {
         y: {
           beginAtZero: true,
-          title: { display: true, text: "Score / Time" },
-        },
-      },
-    },
+          title: { display: true, text: "Score / Time" }
+        }
+      }
+    }
   });
 }

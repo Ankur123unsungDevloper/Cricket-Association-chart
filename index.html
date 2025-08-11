@@ -26,40 +26,55 @@
       </div>
     </div>
 
-    <div class="form-container">
+    <form id="reportForm" class="form-container">
       <div class="form-fields">
+
+        <!-- 1. Latest Date (End Date) -->
         <div class="date-wrapper">
-          <input type="date" id="dateInput" class="input date-input" />
+          <label for="dateInput">Latest Date (End Date):</label>
+          <input type="date" id="dateInput" name="latestDate" class="input date-input" />
         </div>
 
+        <!-- 2. Select Player -->
         <div class="select-wrapper">
-          <label for="playerSelect">Select Player</label>
-          <select id="playerSelect" class="custom-select">
-            <option disabled selected>Select a player</option>
+          <label for="playerSelect">Select Player:</label>
+          <select id="playerSelect" name="playerSelect" class="custom-select">
+            <option value="">-- Select Player --</option>
+            <!-- Populate from DB -->
           </select>
         </div>
 
-        <label for="testCountSelect">Number of Recent Tests</label>
-        <select id="testCountSelect" class="input">
-          <script>
-            for (let i = 1; i <= 20; i++) {
-              document.write(`<option value="${i}">${i}</option>`);
-            }
-          </script>
-        </select>
+        <!-- 3. Number of Recent Tests -->
+        <div class="select-wrapper">
+          <label for="testCountSelect">Number of Recent Tests:</label>
+          <select id="testCountSelect" name="recentTests" class="input">
+            <script>
+              for (let i = 1; i <= 20; i++) {
+                document.write(`<option value="${i}">${i}</option>`);
+              }
+            </script>
+          </select>
+        </div>
 
-        
-        <label for="testTypeSelect">Choose Test</label>
-        <select id="testTypeSelect" class="custom-select">
-          <option disabled selected>Select a test</option>
-        </select>
+        <!-- 4. Choose Test -->
+        <div class="select-wrapper">
+          <label for="testTypeSelect">Choose Test:</label>
+          <select id="testTypeSelect" name="testType" class="custom-select">
+            <option value="">-- Select a Test --</option>
+          </select>
+        </div>
 
-        <button type="button" onclick="generateReport()">Fetch Report</button>
+        <!-- 5. Submit Button -->
+        <div class="button-wrapper">
+          <button type="button" onclick="generateReport()">Fetch Report</button>
+        </div>
       </div>
 
+      <!-- Chart Area -->
       <div class="chart-container">
         <canvas id="chartCanvas"></canvas>
       </div>
+    </form>
     </div>
   </main>
 
