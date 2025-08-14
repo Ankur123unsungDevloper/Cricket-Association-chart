@@ -31,7 +31,7 @@
 
         <!-- 1. Latest Date (End Date) -->
         <div class="date-wrapper">
-          <label for="dateInput">Latest Date (End Date):</label>
+          <label for="dateInput">Latest Date (End Date):</label> <br />
           <input type="date" id="dateInput" name="latestDate" class="input date-input" />
         </div>
 
@@ -56,12 +56,17 @@
           </select>
         </div>
 
-        <!-- 4. Choose Test -->
-        <div class="select-wrapper">
-          <label for="testTypeSelect">Choose Test:</label>
-          <select id="testTypeSelect" name="testType" class="custom-select">
-            <option value="">-- Select a Test --</option>
-          </select>
+        <!-- Drag & Drop Test Selection -->
+        <div class="drag-drop-container" id="dragDropContainer" style="display: none;">
+          <div class="tests-list available-tests" id="availableTests">
+              <h3>Available Tests</h3>
+              <!-- JS will insert test cards here -->
+          </div>
+
+          <div class="tests-list selected-tests" id="selectedTests">
+              <h3>Selected Tests</h3>
+              <!-- Dropped items will appear here -->
+          </div>
         </div>
 
         <!-- 5. Submit Button -->
@@ -71,8 +76,13 @@
       </div>
 
       <!-- Chart Area -->
-      <div class="chart-container">
-        <canvas id="chartCanvas"></canvas>
+      <div class="chart-area">
+        <div class="chart-container">
+          <canvas id="chartCanvas1"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="chartCanvas2"></canvas>
+        </div>
       </div>
     </form>
     </div>
