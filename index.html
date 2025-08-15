@@ -57,7 +57,7 @@
         </div>
 
         <!-- Drag & Drop Test Selection -->
-        <div class="drag-drop-container" id="dragDropContainer" style="display: none;">
+        <div class="drag-drop-container" id="dragDropContainer">
           <div class="tests-list available-tests" id="availableTests">
               <h3>Available Tests</h3>
               <!-- JS will insert test cards here -->
@@ -77,11 +77,47 @@
 
       <!-- Chart Area -->
       <div class="chart-area">
-        <div class="chart-container">
-          <canvas id="chartCanvas1"></canvas>
+        <div class="chart-header">
+          <h3 style="color:white; text-align:center; font-style:italic;">
+            Individual Report - <span id="playerNameTitle"></span>
+          </h3>
+          <table class="player-info-table">
+            <tr>
+              <td rowspan="5" class="player-photo"></td>
+              <th>Name</th>
+              <td id="playerName"></td>
+            </tr>
+            <tr>
+              <th>Gender</th>
+              <td id="playerGender"></td>
+            </tr>
+            <tr>
+              <th>Age</th>
+              <td id="playerAge"></td>
+            </tr>
+            <tr>
+              <th>Handedness</th>
+              <td id="playerHandedness"></td>
+            </tr>
+            <tr>
+              <th>Role</th>
+              <td id="playerRole"></td>
+            </tr>
+          </table>
         </div>
         <div class="chart-container">
-          <canvas id="chartCanvas2"></canvas>
+          <div class="chart-content">
+            <canvas id="chartCanvas1"></canvas>
+          </div>
+          <div class="chart-content">
+            <canvas id="chartCanvas2"></canvas>
+          </div>
+          <div class="chart-content">
+            <canvas id="chartCanvas3"></canvas>
+          </div>
+          <div class="chart-content">
+            <canvas id="chartCanvas4"></canvas>
+          </div>
         </div>
       </div>
     </form>
