@@ -1,19 +1,40 @@
-let playerData = [];      // parsed CSV rows (objects keyed by headers)
-let headers = [];         // CSV headers
-let chartInstances = [];  // Chart.js instances (for 2 canvases)
-const MAX_SELECTED_TESTS = 2;
+// Global state variables
+let playerData = [];
+let headers = [];
+let chartInstances = [];
+const MAX_SELECTED_TESTS = 4; // Updated from 2 to 4
 
-// Map CSV headers -> nice labels shown on cards
+// List of allowed test headers from the user
+const allowedTestHeaders = [
+  "10m Best (sec)",
+  "20m Best (sec)",
+  "40m Best (sec)",
+  "Yo-Yo Level",
+  "SBJ Best (mts)",
+  "S/L Glute Bridges (Sec)",
+  "SL Lunge Calf Raises",
+  "MB Rotational Throws",
+  "Copenhagen (Sec)",
+  "S/L Hop Left",
+  "Run A 3 Best(sec)",
+  "Run A 3×6 Best(sec)",
+  "1 Mile Time (min)",
+  "Push-ups Count",
+  "2 KM Time (min)",
+  "CMJ Score",
+];
+
+// Map CSV headers to nicer labels for display
 const testHeaders = {
   "10m Best (sec)": "10m",
   "20m Best (sec)": "20m",
   "40m Best (sec)": "40m",
   "Yo-Yo Level": "YoYo",
   "SBJ Best (mts)": "SBJ",
-  "S/L Glute Bridges (Sec)": "S/L Glute Bridges (Sec)",
+  "S/L Glute Bridges (Sec)": "S/L Glute Bridges",
   "SL Lunge Calf Raises": "SL Lunge Calf Raises",
   "MB Rotational Throws": "MB Rotational Throws",
-  "Copenhagen (Sec)": "Copenhagen (Sec)",
+  "Copenhagen (Sec)": "Copenhagen",
   "S/L Hop Left": "S/L Hop",
   "Run A 3 Best(sec)": "Run A 3",
   "Run A 3×6 Best(sec)": "Run A 3×6",
@@ -21,160 +42,147 @@ const testHeaders = {
   "Push-ups Count": "Push-ups",
   "2 KM Time (min)": "2 KM",
   "CMJ Score": "CMJ Scores",
-  // your CSV example fields (these won't be plotted; just here so they don't show up as tests)
-  "WEIGHT": "WEIGHT"
+  "WEIGHT": "WEIGHT",
+  "Coach Name": "Coach Name",
 };
 
-/* ======= DOM refs (must exist in your HTML) ======= */
-const uploadEl        = document.getElementById("uploadCSV");
-const playerSelect    = document.getElementById("playerSelect");
+// DOM element references
+const uploadEl = document.getElementById("uploadCSV");
+const playerSelect = document.getElementById("playerSelect");
 const testCountSelect = document.getElementById("testCountSelect");
-const dateInput       = document.getElementById("dateInput");
-const canvas1         = document.getElementById("chartCanvas1");
-const canvas2         = document.getElementById("chartCanvas2");
-const availableCol    = document.getElementById("availableTests");
-const selectedCol     = document.getElementById("selectedTests");
-const dragDropWrap    = document.querySelector(".drag-drop-container");
-const chartHeader     = document.querySelector(".chart-header"); // header card target
+const dateInput = document.getElementById("dateInput");
+const dragDropContainer = document.getElementById("dragDropContainer");
+const availableTestsCol = document.getElementById("availableTests");
+const selectedTestsCol = document.getElementById("selectedTests");
+const chartArea = document.getElementById("chartArea");
+const chartCanvases = [
+  document.getElementById("chartCanvas1"),
+  document.getElementById("chartCanvas2"),
+  document.getElementById("chartCanvas3"),
+  document.getElementById("chartCanvas4"),
+];
+const playerNameTitle = document.getElementById("playerNameTitle");
+const playerInfoTable = document.querySelector(".player-info-table");
 
-/* ======= Hide areas until CSV is uploaded / form is valid ======= */
-if (dragDropWrap) dragDropWrap.style.display = "none";
-if (chartHeader)  chartHeader.style.display  = "none";
+// Set initial visibility
+dragDropContainer.style.display = "none";
+chartArea.style.display = "none";
 
-/* ======= CSV parsing ======= */
+/**
+ * Parses a CSV text string into an array of objects.
+ * @param {string} text The CSV content.
+ * @returns {{hdr: string[], data: object[]}} An object containing headers and parsed data.
+ */
 function parseCSVText(text) {
-  const rows = text.replace(/\r/g, "").split("\n").filter(r => r.trim() !== "");
+  const rows = text.replace(/\r/g, "").split("\n").filter((r) => r.trim() !== "");
   if (rows.length === 0) return { hdr: [], data: [] };
 
-  let headerIdx = rows.findIndex(r => r.split(",").map(c => c.trim().toLowerCase()).includes("player"));
-  if (headerIdx === -1) headerIdx = 0;
+  const headerIdx = rows.findIndex((r) => r.split(",").map((c) => c.trim().toLowerCase()).includes("player"));
+  const headerCells = rows[headerIdx === -1 ? 0 : headerIdx].split(",").map((h) => h.trim());
 
-  const hdrCells = rows[headerIdx].split(",").map(h => h.trim());
   const dataRows = [];
   for (let i = headerIdx + 1; i < rows.length; i++) {
     const cells = rows[i].split(",");
     if (cells.length <= 1 && !cells[0]?.trim()) continue;
     const obj = {};
-    for (let j = 0; j < hdrCells.length; j++) {
-      obj[hdrCells[j]] = (cells[j] !== undefined) ? cells[j].trim() : "";
+    for (let j = 0; j < headerCells.length; j++) {
+      obj[headerCells[j]] = cells[j] !== undefined ? cells[j].trim() : "";
     }
     dataRows.push(obj);
   }
-  return { hdr: hdrCells, data: dataRows };
+  return { hdr: headerCells, data: dataRows };
 }
 
-/* ======= Populate players ======= */
+/**
+ * Populates the player dropdown with unique player names from the parsed data.
+ */
 function populatePlayerDropdown() {
-  playerSelect.innerHTML = '<option disabled selected>Select a player</option>';
-  const uniquePlayers = [...new Set(playerData.map(r => r["Player"]).filter(Boolean))];
-  uniquePlayers.forEach(p => {
+  playerSelect.innerHTML = '<option value="" disabled selected>-- Select Player --</option>';
+  const uniquePlayers = [...new Set(playerData.map((r) => r["Player"]).filter(Boolean))];
+  uniquePlayers.forEach((player) => {
     const opt = document.createElement("option");
-    opt.value = p;
-    opt.textContent = p;
+    opt.value = player;
+    opt.textContent = player;
     playerSelect.appendChild(opt);
   });
 }
 
-/* ======= Build test cards (Available column) ======= */
-function buildAvailableTestCards() {
-  if (dragDropWrap) dragDropWrap.style.display = "";
+/**
+ * Creates and appends the draggable test cards to the 'Available Tests' column.
+ */
+function createTestCards() {
+  dragDropContainer.style.display = "flex"; // Show drag-and-drop container
 
-  availableCol.innerHTML = "<h3>Available Tests</h3>";
-  selectedCol.innerHTML  = "<h3>Selected Tests</h3>";
+  availableTestsCol.innerHTML = "<h3>Available Tests</h3>";
+  selectedTestsCol.innerHTML = "<h3>Selected Tests</h3>";
 
-  // Only include tests that exist in this CSV and are numeric-ish metrics (exclude identity fields)
-  const nonTestFields = new Set([
-    "Player","Date","Phase","Age Category","Gender","Sex","DOB","Role",
-    "Position","Dominant Hand","Handedness","Coach Name", "WEIGHT"
-  ]);
-  const availableCSVTests = Object.keys(testHeaders)
-    .filter(h => headers.includes(h) && !nonTestFields.has(h));
+  // Filter headers to only include the allowed tests
+  const availableCSVTests = headers.filter((h) => allowedTestHeaders.includes(h));
 
-  const listToUse = availableCSVTests.length ? availableCSVTests
-    : headers.filter(h => !nonTestFields.has(h));
+  availableCSVTests.forEach((csvHeader) => {
+    const card = document.createElement("div");
+    card.className = "test-card";
+    card.draggable = true;
+    card.dataset.header = csvHeader;
+    card.dataset.label = testHeaders[csvHeader] || csvHeader;
+    card.textContent = testHeaders[csvHeader] || csvHeader;
 
-  listToUse.forEach(csvHeader => {
-    const card = makeTestCard(csvHeader, testHeaders[csvHeader] || csvHeader);
-    availableCol.appendChild(card);
+    card.addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", csvHeader);
+      card.classList.add("dragging");
+    });
+    card.addEventListener("dragend", () => {
+      card.classList.remove("dragging");
+    });
+    card.addEventListener("click", () => {
+      if (card.parentElement === availableTestsCol) {
+        tryMoveToSelected(card);
+      } else {
+        availableTestsCol.appendChild(card);
+      }
+    });
+    availableTestsCol.appendChild(card);
   });
 
-  enableColumnDnD(availableCol);
-  enableColumnDnD(selectedCol);
+  enableColumnDnD(availableTestsCol);
+  enableColumnDnD(selectedTestsCol);
 }
 
-/* ======= Create a draggable test card ======= */
-function makeTestCard(csvHeader, label) {
-  const card = document.createElement("div");
-  card.className = "test-card";
-  card.draggable = true;
-  card.dataset.header = csvHeader;
-  card.dataset.label  = label;
-  card.style.padding = "8px 10px";
-  card.style.marginTop = "8px";
-  card.style.background = "#f8fafc";
-  card.style.border = "1px solid #e5e7eb";
-  card.style.borderRadius = "8px";
-  card.style.cursor = "grab";
-  card.textContent = label;
+/**
+ * Enables drag-and-drop functionality for a given column element.
+ * @param {HTMLElement} columnEl The column to enable D&D on.
+ */
+function enableColumnDnD(columnEl) {
+  columnEl.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    const draggingCard = document.querySelector(".test-card.dragging");
+    if (!draggingCard) return;
 
-  card.addEventListener("dragstart", (e) => {
-    e.dataTransfer.setData("text/plain", csvHeader);
-    e.currentTarget.style.opacity = "0.5";
-    card.classList.add("dragging");
-  });
-  card.addEventListener("dragend", (e) => {
-    e.currentTarget.style.opacity = "1";
-    card.classList.remove("dragging");
-  });
-
-  // Click to toggle between columns (useful on mobile)
-  card.addEventListener("click", () => {
-    if (card.parentElement === availableCol) {
-      tryMoveToSelected(card);
+    if (columnEl === selectedTestsCol) {
+      const afterEl = getDragAfterElement(columnEl, e.clientY);
+      if (afterEl == null) {
+        columnEl.appendChild(draggingCard);
+      } else {
+        columnEl.insertBefore(draggingCard, afterEl);
+      }
     } else {
-      availableCol.appendChild(card);
+      e.dataTransfer.dropEffect = "move";
     }
   });
 
-  return card;
-}
-
-/* ======= Enable drop behavior on a column ======= */
-function enableColumnDnD(colEl) {
-  colEl.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  });
-
-  colEl.addEventListener("drop", (e) => {
+  columnEl.addEventListener("drop", (e) => {
     e.preventDefault();
     const csvHeader = e.dataTransfer.getData("text/plain");
     if (!csvHeader) return;
     const card = document.querySelector(`.test-card[data-header="${cssEscape(csvHeader)}"]`);
     if (!card) return;
 
-    if (colEl === selectedCol) {
-      tryMoveToSelected(card, e);
+    if (columnEl === selectedTestsCol) {
+      tryMoveToSelected(card);
     } else {
-      availableCol.appendChild(card);
+      availableTestsCol.appendChild(card);
     }
   });
-
-  // Reorder inside selected column by pointer position
-  if (colEl === selectedCol) {
-    colEl.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      const afterEl = getDragAfterElement(colEl, e.clientY);
-      const draggingHeader = e.dataTransfer.getData("text/plain");
-      const draggingCard = document.querySelector(`.test-card[data-header="${cssEscape(draggingHeader)}"]`);
-      if (!draggingCard) return;
-      if (afterEl == null) {
-        colEl.appendChild(draggingCard);
-      } else if (afterEl !== draggingCard) {
-        colEl.insertBefore(draggingCard, afterEl);
-      }
-    });
-  }
 }
 
 function getDragAfterElement(container, y) {
@@ -183,36 +191,43 @@ function getDragAfterElement(container, y) {
     const box = child.getBoundingClientRect();
     const offset = y - box.top - box.height / 2;
     if (offset < 0 && offset > closest.offset) {
-      return { offset, element: child };
+      return { offset: offset, element: child };
     } else {
       return closest;
     }
   }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
-/* ======= Move to Selected with cap of 2 ======= */
-function tryMoveToSelected(card, dropEvent = null) {
-  const count = getSelectedTestHeaders().length;
+function tryMoveToSelected(card) {
+  const count = selectedTestsCol.querySelectorAll(".test-card").length;
   if (count >= MAX_SELECTED_TESTS) {
     alert(`You can select up to ${MAX_SELECTED_TESTS} tests.`);
     return;
   }
-  if (dropEvent) {
-    const afterEl = getDragAfterElement(selectedCol, dropEvent.clientY);
-    if (afterEl == null) selectedCol.appendChild(card);
-    else selectedCol.insertBefore(card, afterEl);
-  } else {
-    selectedCol.appendChild(card);
+  selectedTestsCol.appendChild(card);
+}
+
+/**
+ * Gets the headers of all test cards currently in the "Selected Tests" column.
+ * @returns {string[]} An array of CSV headers.
+ */
+function getSelectedTestHeaders() {
+  return [...selectedTestsCol.querySelectorAll(".test-card")].map((c) => c.dataset.header);
+}
+
+// Populate test count dropdown (1 to 20)
+function populateTestCountDropdown() {
+  for (let i = 1; i <= 20; i++) {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = i;
+    testCountSelect.appendChild(opt);
   }
 }
 
-function getSelectedTestHeaders() {
-  return [...selectedCol.querySelectorAll(".test-card")].map(c => c.dataset.header);
-}
-
-/* ======= CSV upload handler ======= */
-uploadEl.addEventListener("change", handleCSVUpload);
-
+/**
+ * Handles the file upload event, parses the CSV, and updates the UI.
+ */
 function handleCSVUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -221,169 +236,169 @@ function handleCSVUpload(e) {
   reader.onload = (ev) => {
     const text = ev.target.result;
     const parsed = parseCSVText(text);
-    headers = (parsed.hdr || []).map(h => h.trim());
+    headers = parsed.hdr || [];
     playerData = parsed.data || [];
 
-    if (!headers.some(h => h.toLowerCase() === "player")) {
-      alert("CSV does not contain 'Player' header. Please check file.");
+    if (!headers.some((h) => h.toLowerCase() === "player")) {
+      alert("CSV does not contain a 'Player' header. Please check your file.");
       return;
     }
 
-    // Reset UI
-    if (chartHeader) chartHeader.style.display = "none";
+    // Reset and update UI
+    chartArea.style.display = "none";
     populatePlayerDropdown();
-    buildAvailableTestCards();
+    createTestCards();
     destroyCharts();
-    clearCanvas(canvas1);
-    clearCanvas(canvas2);
+    clearCanvases();
   };
   reader.readAsText(file);
 }
 
-/* ======= Chart helpers ======= */
+// Chart utility functions
 function destroyCharts() {
-  chartInstances.forEach(c => { try { c.destroy(); } catch(e){} });
+  chartInstances.forEach((c) => c.destroy());
   chartInstances = [];
 }
-function clearCanvas(cv) {
-  if (!cv) return;
-  const ctx = cv.getContext("2d");
-  ctx.clearRect(0, 0, cv.width, cv.height);
+function clearCanvases() {
+  chartCanvases.forEach((canvas) => {
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
 }
 
-/* ======= Date parser ======= */
-function parseDateVal(val) {
-  if (!val) return null;
-  const iso = new Date(val);
-  if (!isNaN(iso)) return iso;
-  const m = val.match(/(\d{1,2})[-\/](\d{1,2})[-\/](\d{2,4})/);
-  if (m) {
-    const d = parseInt(m[1],10), mm = parseInt(m[2],10)-1, y = parseInt(m[3],10);
-    return new Date(y, mm, d);
-  }
-  return null;
+/**
+ * Updates the player info table with data from the selected player's row.
+ * @param {string} playerName The name of the selected player.
+ */
+function updatePlayerInfo(playerName) {
+  const row = playerData.find(r => r["Player"] === playerName) || {};
+  const name = row["Player"] || "-";
+  const gender = row["Gender"] || "N/A";
+  const age = row["Age Category"] || "N/A";
+  const handedness = row["Handedness"] || "N/A";
+  const role = row["Role"] || "Batsman";
+  const coachName = row["Coach Name"] || "N/A";
+
+  // Update the DOM directly instead of using a HTML string
+  playerNameTitle.textContent = name.toUpperCase();
+  document.getElementById("playerName").textContent = name;
+  document.getElementById("playerGender").textContent = gender;
+  document.getElementById("playerAge").textContent = age;
+  document.getElementById("playerHandedness").textContent = handedness;
+  document.getElementById("playerRole").textContent = role;
+  document.getElementById("coachName").textContent = coachName;
+
+  chartArea.style.display = "block";
 }
 
-/* ======= Build + render header card (only after valid form) ======= */
-function getPlayerRow(playerName) {
-  return playerData.find(r => r["Player"] === playerName) || {};
-}
-
-function buildHeaderHTML(playerName) {
-  const row = getPlayerRow(playerName);
-  const name = row["Player"] || playerName || "-";
-  const gender = row["Gender"] || "";                 // not in your CSV
-  const age = row["Age Category"] || "";              // in your CSV
-  const handed = row["Handedness"] || "";             // not in your CSV
-  const role = row["Role"] || "Batsman";              // default if missing
-
-  // Inline-styled card (green theme)
-  return `
-  <div style="width:100%; background:#1b4d2e; border:2px solid #f59e0b; color:#fff; border-radius:8px; overflow:hidden;">
-    <div style="padding:6px 10px; text-align:center; font-weight:700; font-style:italic; border-bottom:1px solid rgba(255,255,255,.2);">
-      Individual Report - ${name.toUpperCase()}
-    </div>
-    <div style="display:flex; gap:10px; padding:10px;">
-      <div style="flex:0 0 90px; background:#114224; border:1px solid rgba(255,255,255,.15); border-radius:4px; min-height:90px;"></div>
-      <div style="flex:1;">
-        <table style="width:100%; border-collapse:collapse; font-size:13px;">
-          <thead style="display:none"></thead>
-          <tbody>
-            ${rowCell('Name', name)}
-            ${rowCell('Gender', gender)}
-            ${rowCell('Age', age)}
-            ${rowCell('Handedness', handed)}
-            ${rowCell('Role', role)}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  `;
-  function rowCell(label, value){
-    return `
-      <tr>
-        <td style="width:40%; border:1px solid rgba(255,255,255,.25); padding:6px 8px; text-align:center; font-weight:600;">${label}</td>
-        <td id="player${label}Cell" style="border:1px solid rgba(255,255,255,.25); padding:6px 8px; text-align:center;">${value || ""}</td>
-      </tr>`;
-  }
-}
-
-/* ======= Generate Report (plots two charts + shows header) ======= */
+/**
+ * Generates and renders the charts based on the form selections.
+ */
 function generateReport() {
   const playerName = playerSelect.value;
-  if (!playerName) { alert("Please select a player."); return; }
-
   const selectedHeaders = getSelectedTestHeaders();
+  const testCount = parseInt(testCountSelect.value, 10);
+
+  if (!playerName) {
+    alert("Please select a player.");
+    return;
+  }
   if (selectedHeaders.length === 0) {
-    alert("Please drag tests to 'Selected Tests' (up to 2).");
+    alert("Please drag tests to 'Selected Tests' (up to 4).");
     return;
   }
   if (selectedHeaders.length > MAX_SELECTED_TESTS) {
     alert(`Please keep only ${MAX_SELECTED_TESTS} tests in 'Selected Tests'.`);
     return;
   }
-
-  const testCount = parseInt(testCountSelect.value, 10);
-  if (!testCount || isNaN(testCount)) { alert("Please select Number of Recent Tests."); return; }
-
-  const endDate = parseDateVal(dateInput.value);
-
-  // Header: show only now (form is valid) and fill with CSV info
-  if (chartHeader) {
-    chartHeader.innerHTML = buildHeaderHTML(playerName);
-    chartHeader.style.display = ""; // reveal
+  if (!testCount || isNaN(testCount)) {
+    alert("Please select the Number of Recent Tests.");
+    return;
   }
 
-  // Charts
+  const endDate = dateInput.value ? new Date(dateInput.value) : null;
+  updatePlayerInfo(playerName);
   destroyCharts();
-  clearCanvas(canvas1);
-  clearCanvas(canvas2);
 
-  const canvases = [canvas1, canvas2];
   selectedHeaders.forEach((testHeader, idx) => {
-    if (!canvases[idx]) return;
+    const canvas = chartCanvases[idx];
+    if (!canvas) return;
 
-    let rows = playerData.filter(r => r["Player"] === playerName && r[testHeader] !== undefined && r[testHeader] !== "");
+    const groupAvgHeader = `${testHeader} GRP Average`;
+    const indvAvgHeader = `${testHeader} INDV Average`;
+    const targetHeader = `${testHeader} Target`;
 
+    let rows = playerData.filter((r) => r["Player"] === playerName && r[testHeader] !== undefined && r[testHeader] !== "");
     if (endDate) {
-      rows = rows.filter(r => {
-        const d = parseDateVal(r["Date"]);
-        if (!d) return false;
-        return d <= endDate;
+      rows = rows.filter((r) => {
+        const d = new Date(r["Date"]);
+        return !isNaN(d) && d <= endDate;
       });
     }
 
-    // sort by date asc
-    rows.sort((a,b) => {
-      const da = parseDateVal(a["Date"]); const db = parseDateVal(b["Date"]);
-      if (da && db) return da - db;
-      if (da && !db) return 1;
-      if (!da && db) return -1;
-      return 0;
-    });
+    // Sort by date ascending
+    rows.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
 
     const lastRows = rows.slice(-testCount);
-    const labels = lastRows.map(r => (r["Date"] || r["Phase"] || "").toString());
-    const values = lastRows.map(r => {
-      const v = r[testHeader];
-      const num = parseFloat(String(v).replace(/[^\d.\-]/g,''));
-      return isNaN(num) ? null : num;
-    });
+    const labels = lastRows.map((r) => r["Date"] || r["Phase"] || "N/A");
+    const values = lastRows.map((r) => parseFloat(String(r[testHeader]).replace(/[^\d.\-]/g, '')) || null);
+    const grpAvgValues = lastRows.map((r) => parseFloat(String(r[groupAvgHeader]).replace(/[^\d.\-]/g, '')) || null);
+    const indvAvgValues = lastRows.map((r) => parseFloat(String(r[indvAvgHeader]).replace(/[^\d.\-]/g, '')) || null);
+    const targetValues = lastRows.map((r) => parseFloat(String(r[targetHeader]).replace(/[^\d.\-]/g, '')) || null);
 
     const labelNice = testHeaders[testHeader] || testHeader;
-    const ctx = canvases[idx].getContext("2d");
+    const ctx = canvas.getContext("2d");
 
-    const c = new Chart(ctx, {
+    const datasets = [
+      {
+        label: `Value`,
+        data: values,
+        backgroundColor: "#3b82f6",
+        borderRadius: 6,
+      },
+    ];
+
+    // Add average and target lines if their headers exist in the data
+    if (headers.includes(groupAvgHeader)) {
+      datasets.push({
+        label: `GRP Average`,
+        data: grpAvgValues,
+        type: 'line',
+        borderColor: 'red',
+        borderDash: [5, 5],
+        fill: false,
+        pointRadius: 0,
+      });
+    }
+
+    if (headers.includes(indvAvgHeader)) {
+      datasets.push({
+        label: `INDV Average`,
+        data: indvAvgValues,
+        type: 'line',
+        borderColor: 'orange',
+        borderDash: [5, 5],
+        fill: false,
+        pointRadius: 0,
+      });
+    }
+
+    if (headers.includes(targetHeader)) {
+      datasets.push({
+        label: `Target`,
+        data: targetValues,
+        type: 'line',
+        borderColor: 'green',
+        fill: false,
+        pointRadius: 0,
+      });
+    }
+
+    const newChart = new Chart(ctx, {
       type: "bar",
       data: {
         labels,
-        datasets: [{
-          label: `${playerName} - ${labelNice}`,
-          data: values,
-          backgroundColor: "#3b82f6",
-          borderRadius: 6
-        }]
+        datasets: datasets,
       },
       options: {
         responsive: true,
@@ -393,34 +408,21 @@ function generateReport() {
         },
         plugins: {
           title: { display: false },
-          tooltip: {
-            callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}` }
-          },
-          legend: { display: true }
-        }
-      }
+          tooltip: { callbacks: { label: (tooltipItem) => `${tooltipItem.dataset.label}: ${tooltipItem.raw}` } },
+          legend: { display: true, position: 'top', align: 'start' },
+        },
+      },
     });
-    chartInstances.push(c);
+    chartInstances.push(newChart);
   });
-
-  if (selectedHeaders.length === 1) clearCanvas(canvas2);
 }
 
-// Attach generateReport for your button onclick
-window.generateReport = generateReport;
+// Event listeners and initial setup
+uploadEl.addEventListener("change", handleCSVUpload);
+populateTestCountDropdown();
+window.generateReport = generateReport; // Expose to global scope for the button
 
-/* ======= Enter key triggers report when focus is on inputs ======= */
-document.addEventListener('keydown', (ev) => {
-  if (ev.key === 'Enter') {
-    const active = document.activeElement;
-    if ([playerSelect, testCountSelect, dateInput].includes(active)) {
-      ev.preventDefault();
-      generateReport();
-    }
-  }
-});
-
-/* ======= Small helper to escape attribute selectors ======= */
+// Helper function for escaping CSS selectors
 function cssEscape(str) {
   return String(str).replace(/["\\\]]/g, "\\$&");
 }

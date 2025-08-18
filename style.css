@@ -1,32 +1,57 @@
+:root {
+  /* Colors */
+  --color-primary: #0f172a;
+  --color-secondary: #007CF0;
+  --color-accent: #00DFD8;
+  --color-background: #f4f6fa;
+  --color-card-bg: #fff;
+  --color-text-dark: #1a202c;
+  --color-text-light: #fff;
+  --color-border-light: #d1d5db;
+  --color-border-dark: #e5e7eb;
+  --color-highlight: #d9f7be;
+  --color-input-bg: #f9fafb;
+  --color-dark-green: #1b4d2e;
+  --color-orange: #f59e0b;
+  --color-gray: #363636;
+  --color-light-gray: #f8fafc;
+  
+  /* Spacing */
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f6fa;
-  color: #1a202c;
+  background-color: var(--color-background);
+  color: var(--color-text-dark);
 }
 
 .welcome-section {
   height: 260px;
-  background: linear-gradient(to right, #007CF0, #00DFD8);
+  background: linear-gradient(to right, var(--color-secondary), var(--color-accent));
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0 2rem;
+  padding: 0 var(--space-xl);
 }
 
 .welcome-section h1 {
   font-size: 32px;
   font-weight: 600;
-  color: white;
+  color: var(--color-text-light);
   margin: 0;
 }
 
 .main-card {
   max-width: 1200px;
-  margin: -80px auto 2rem auto;
-  background-color: #fff;
+  margin: -80px auto var(--space-xl) auto;
+  background-color: var(--color-card-bg);
   border-radius: 12px;
-  padding: 2rem;
+  padding: var(--space-xl);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
   position: relative;
   z-index: 10;
@@ -36,23 +61,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-#importCSV {
-  display: none;
-}
-
-.import-wrapper {
-  display: flex;
-  justify-content: flex-end;
+  margin-bottom: var(--space-lg);
 }
 
 .import-button {
   display: inline-flex;
   align-items: center;
-  background-color: #0f172a;
-  color: #fff;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
   padding: 10px 18px;
   border-radius: 8px;
   font-weight: 600;
@@ -75,112 +91,84 @@ body {
 .form-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
 }
 
 .form-fields {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  padding: 2rem;
-  background-color: #ffffff;
+  padding: var(--space-xl);
+  background-color: var(--color-card-bg);
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border-dark);
 }
 
 .form-fields label {
   font-size: 14px;
+  margin-bottom: 10px;
   font-weight: 600;
   color: #1f2937;
+}
+
+.input {
+  padding: 0.75rem 1rem;
+  font-size: 15px;
+  font-weight: 500;
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  background-color: var(--color-input-bg);
+  transition: all 0.2s ease-in-out;
+  color: #111827;
+}
+
+select.input {
+  width: 100%;
+}
+
+.input:focus,
+select.input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: var(--color-card-bg);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 .date-wrapper {
   position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
 }
 
-.date-wrapper input[type="date"] {
+input[type="date"] {
   padding-left: 2.5rem;
-  font-size: 15px;
-  border-radius: 12px;
-  border: 1px solid #d1d5db;
-  background-color: #f9fafb;
-  color: #111827;
-  width: 100%;
-  height: 20px;
   background-image: url("data:image/svg+xml,%3Csvg fill='gray' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM5 20V9h14v11H5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: 10px center;
   background-size: 18px 18px;
-
-  /* ✅ This hides the browser's right-side icon but retains the calendar popup */
-  /* For WebKit (Chrome, Safari, Edge) */
-  &::-webkit-calendar-picker-indicator {
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-  }
-
-  /* For Firefox */
-  &::-moz-focus-inner {
-    border: 0;
-  }
 }
 
-.drag-drop-container {
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 1rem;
-}
-
-.tests-list {
-  flex: 1;
-  min-height: 200px;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-}
-
-.tests-list h3 {
-  margin-bottom: 0.8rem;
-}
-
-.test-card {
-  padding: 0.6rem 1rem;
-  background: white;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  margin-bottom: 0.5rem;
-  cursor: grab;
-  transition: background 0.2s ease;
-}
-
-.test-card.dragging {
-  opacity: 0.5;
-  background: #e3f2fd;
-}
-
-.tests-list.over {
-  background: #d9f7be; /* highlight when dragging over */
+/* Hide browser's native date picker icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
 }
 
 .custom-select {
   appearance: none;
   width: 100%;
-  padding: 0.75rem 2.5rem 0.75rem 1rem; /* room for icon */
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
   font-size: 15px;
   font-weight: 500;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border-light);
   border-radius: 12px;
-  background-color: #f9fafb;
+  background-color: var(--color-input-bg);
   color: #111827;
   background-image: url("data:image/svg+xml;utf8,<svg fill='gray' viewBox='0 0 24 24' width='20' height='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5'/></svg>");
   background-repeat: no-repeat;
@@ -193,41 +181,12 @@ body {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-  background-color: #fff;
-}
-
-.input,
-select {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 15px;
-  font-weight: 500;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  background-color: #f9fafb;
-  transition: all 0.2s ease-in-out;
-  color: #111827;
-}
-
-.input:focus,
-select:focus {
-  outline: none;
-  border-color: #2563eb;
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-}
-
-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='24' viewBox='0 0 24 24' width='24'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1rem;
+  background-color: var(--color-card-bg);
 }
 
 button {
-  background-color: #0f172a;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
   font-weight: 700;
   font-size: 15px;
   padding: 0.9rem;
@@ -242,83 +201,144 @@ button:hover {
   transform: translateY(-1px);
 }
 
-.chart-area {
-  width: 100%;
-  margin-top: 2rem;
+.drag-drop-container {
+  display: flex;
+  gap: var(--space-lg);
+  margin-top: var(--space-md);
+}
+
+.tests-list {
+  flex: 1;
+  min-height: 200px;
+  padding: var(--space-md);
+  background: var(--color-input-bg);
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+}
+
+.tests-list h3 {
+  margin-bottom: var(--space-sm);
+}
+
+.tests-list.over {
+  background: var(--color-highlight);
+}
+
+.test-card {
+  padding: 0.6rem 1rem;
+  background: var(--color-light-gray);
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+  margin-bottom: var(--space-sm);
+  cursor: grab;
+  transition: background 0.2s ease;
+}
+
+.test-card.dragging {
+  opacity: 0.5;
+  background: #e3f2fd;
+}
+
+/* New Player Info Section Styles */
+.player-info-section {
+  margin-top: var(--space-xl);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  background-color: darkgray;
-  padding: 0.5rem;
-  border-radius: 8px;
-}
-
-.chart-header {
-  font-size: 1.5rem;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  background-color: #1b4d2e; /* dark green */
+  gap: var(--space-lg);
+  background-color: var(--color-dark-green);
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1rem;
+  padding: var(--space-md);
 }
 
-.player-card {
-  border-top: 15px solid orange;
-  border-bottom: 15px solid orange;
-  color: white;
+.player-info-title {
+  color: var(--color-text-light);
+  text-align: center;
+  font-style: italic;
+  font-weight: 700;
+  margin: 0;
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.player-info-card {
+  border-top: 15px solid var(--color-orange);
+  border-bottom: 15px solid var(--color-orange);
+  color: var(--color-text-light);
   border-radius: 6px;
   overflow: hidden;
-  font-family: Arial, sans-serif;
-}
-
-.player-card-header {
-  text-align: center;
-  font-weight: bold;
-  padding: 0.5rem;
-  font-style: italic;
-  border-bottom: 1px solid white;
-}
-
-.player-card-body {
   display: flex;
-  align-items: stretch;
+  justify-content: flex-start; /* Aligns items to the start */
+  align-items: center;
+  padding: var(--space-md);
+  flex-wrap: wrap;
 }
 
 .player-photo {
-  width: 225px;
-  background-color: #1b4d2e;
-  border: 1px solid white;
+  background-color: var(--color-dark-green);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  min-height: 176px;
+  width: 170px;
+  flex-shrink: 0;
 }
 
-.player-info {
-  width: 100%;
+.player-info-table {
+  width: 20px;
+  flex-grow: 1; /* Allows the table to take up remaining space */
   border-collapse: collapse;
+  font-size: 14px;
+  color: var(--color-text-light);
 }
 
-.player-info th,
-.player-info td {
-  border: 1px solid white;
+.player-info-table th,
+.player-info-table td {
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 0.5rem;
   text-align: left;
 }
 
-.player-info th {
+.player-info-table th {
   font-weight: normal;
+  background-color: #114224;
+  text-align: center;
+  width: 40%;
 }
 
+.coach-name {
+  align-self: flex-start;
+  padding: var(--space-md);
+  background-color: #114224;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  min-width: 150px;
+  height: 145px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.coach-name strong {
+  font-weight: 700;
+}
+
+/* Chart Area Styles (Initially Hidden) */
+.chart-area {
+  display: none;
+  width: 100%;
+  background-color: #555;
+  padding: var(--space-sm);
+  border-radius: 8px;
+}
 
 .chart-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: var(--space-sm);
   justify-content: space-between;
 }
 
 .chart-content {
   flex: 1 1 calc(50% - 1.5rem);
-  background-color: #363636;
-  padding: 1.5rem;
+  background-color: var(--color-gray);
+  padding: var(--space-lg);
   border-radius: 12px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
   display: flex;
@@ -333,31 +353,11 @@ button:hover {
   height: 100% !important;
 }
 
-
-/* Responsive */
+/* Responsive adjustments */
 @media (max-width: 900px) {
-  .form-container {
+  .drag-drop-container,
+  .form-container,
+  .chart-container {
     flex-direction: column;
   }
-
-  .form-fields,
-  .chart-container {
-    max-width: 100%;
-  }
-}
-
-.custom-select {
-  appearance: none;
-  padding: 0.75rem 2.5rem 0.75rem 1rem;
-  font-size: 15px;
-  font-weight: 500;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  background-color: #f9fafb;
-  color: #111827;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' viewBox='0 0 24 24' width='20' height='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1rem;
-  transition: all 0.2s ease;
 }
