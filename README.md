@@ -32,12 +32,12 @@ cd client1
 **2️⃣ Open the Project**
 Open the folder in VS Code or any code editor.
 
-3️⃣ Install Dependencies
+**3️⃣ Install Dependencies**
 No backend is required.
 
 Ensure you have internet access for CDN imports (Chart.js & Sortable.js). To use offline versions, download the libraries and place them in your project.
 
-4️⃣ Run the Project
+**4️⃣ Run the Project**
 Simply open index.html in your browser.
 
 Or use a local server:
@@ -61,7 +61,7 @@ CLIENT1/
 ---
 
 ## 🚀 Deployment Steps
-GitHub Pages
+**GitHub Pages**
 Push the project to a GitHub repository:
 ```bash
 git add .
@@ -80,7 +80,7 @@ Import your repo into Netlify or Vercel. Deploy in one click (no backend require
 ---
 
 ## 👨‍💻 Contact / Contributors
-Team Member 1 – Ankur Das
+**Team Member 1** – Ankur Das
 
 ---
 
@@ -95,4 +95,4 @@ Team Member 1 – Ankur Das
 
 ## 🎥 Screen Recording
 
-
+<video controls src="Screen Recording 2025-08-18 234053.mp4" title="Title"></video>
