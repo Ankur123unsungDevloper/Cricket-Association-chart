@@ -95,4 +95,6 @@ Import your repo into Netlify or Vercel. Deploy in one click (no backend require
 
 ## 🎥 Screen Recording
 
-<video controls src="https://github.com/user-attachments/assets/Screen Recording 2025-08-18 234053.mp4" title="Title"></video>
+[![Watch the video](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
+
+
