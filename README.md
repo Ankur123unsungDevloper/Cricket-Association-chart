@@ -23,13 +23,13 @@ The dashboard includes:
 
 ---
 
-⚙️ Setup Instructions
-1️⃣ Clone the Repository
+## ⚙️ Setup Instructions
+**1️⃣ Clone the Repository**
 ```bash
 git clone https://github.com/your-username/client1.git
 cd client1
 ```
-2️⃣ Open the Project
+**2️⃣ Open the Project**
 Open the folder in VS Code or any code editor.
 
 3️⃣ Install Dependencies
@@ -48,7 +48,7 @@ npx live-server
 
 ---
 
-📂 Folder Structure
+## 📂 Folder Structure
 ```
 CLIENT1/
 │── index.html                    # Main HTML file
@@ -60,7 +60,7 @@ CLIENT1/
 
 ---
 
-🚀 Deployment Steps
+## 🚀 Deployment Steps
 GitHub Pages
 Push the project to a GitHub repository:
 ```bash
@@ -79,12 +79,12 @@ Import your repo into Netlify or Vercel. Deploy in one click (no backend require
 
 ---
 
-👨‍💻 Contact / Contributors
+## 👨‍💻 Contact / Contributors
 Team Member 1 – Ankur Das
 
 ---
 
-📸 Screenshots
+## 📸 Screenshots
 <img width="1901" height="1099" alt="Screenshot 2025-08-22 223811" src="https://github.com/user-attachments/assets/9a01e6ae-c386-4b52-9685-479ba7fc976d" />
 <img width="1901" height="553" alt="Screenshot 2025-08-22 223822" src="https://github.com/user-attachments/assets/dc4f7ab4-dd47-4fc7-8933-fecf0ce57fdb" />
 <img width="1896" height="1099" alt="Screenshot 2025-08-22 223908" src="https://github.com/user-attachments/assets/5bded744-06c4-44ad-89e4-539698245bde" />
@@ -93,5 +93,6 @@ Team Member 1 – Ankur Das
 
 ---
 
-🎥 Screen Recording
+## 🎥 Screen Recording
+
 
