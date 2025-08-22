@@ -32,4 +32,15 @@ The dashboard includes:
 
 <img width="1901" height="1099" alt="Screenshot 2025-08-22 223811" src="https://github.com/user-attachments/assets/eebbc967-dc4b-4302-8bf2-2510d5724f95" />
 
+<img width="1901" height="553" alt="Screenshot 2025-08-22 223822" src="https://github.com/user-attachments/assets/5dfec70c-1a99-472c-a2d1-0fa0c5cffbb7" />
+
+<img width="1896" height="1099" alt="Screenshot 2025-08-22 223908" src="https://github.com/user-attachments/assets/fe823544-0269-48cd-872b-ee739c5251fd" />
+
+<img width="1900" height="736" alt="Screenshot 2025-08-22 223921" src="https://github.com/user-attachments/assets/02844a1d-336f-4d41-8452-a4cb47f67ed5" />
+
+
+
+---
+
+## ⚙️ Screen-recording
 
