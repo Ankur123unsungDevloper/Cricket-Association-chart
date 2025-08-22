@@ -26,8 +26,10 @@ The dashboard includes:
    git clone https://github.com/your-username/client1.git
    cd client1
 
+---
 
-![WhatsApp Image 2025-07-31 at 16 59 27_1d1e9b7f](https://github.com/user-attachments/assets/8557ff75-aa5b-483d-9f8a-10b147282d75)
+## ⚙️ Screen-short
 
-<img width="1901" height="1101" alt="image" src="https://github.com/user-attachments/assets/c7f28d5e-fbb0-4df6-9f34-832bbd2a6158" />
+<img width="1901" height="1099" alt="Screenshot 2025-08-22 223811" src="https://github.com/user-attachments/assets/eebbc967-dc4b-4302-8bf2-2510d5724f95" />
+
 
